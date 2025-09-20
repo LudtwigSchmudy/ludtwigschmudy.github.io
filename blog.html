@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Blog Posts | Lüdtwig Schmüdy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 9999;
+        }
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #1a202c;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            position: relative;
+            max-width: 90%;
+            width: 500px;
+            text-align: left;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #e2e8f0;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-lg">
+        <nav class="container mx-auto flex flex-col sm:flex-row items-center justify-between p-4">
+            <!-- Updated Logo -->
+            <a href="index.html#home" class="text-3xl font-bold tracking-tight text-white transition-transform hover:scale-105">
+                <svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+                    <rect x="0" y="0" width="100" height="100" rx="15" fill="#2D3748"/>
+                    <path d="M 25 35 L 25 65 L 50 65 M 50 65 L 50 35 L 75 35 L 75 65" stroke="#E2E8F0" stroke-width="8" fill="none" stroke-linecap="round"/>
+                    <path d="M 25 25 Q 50 15, 75 25" stroke="#4299E1" stroke-width="4" fill="none" class="animate-pulse"/>
+                    <path d="M 50 35 H 75 V 65 H 50" stroke="#E2E8F0" stroke-width="8" fill="none" stroke-linecap="round"/>
+                </svg>
+            </a>
+            <div class="mt-4 sm:mt-0 flex flex-wrap justify-center sm:space-x-4">
+                <a href="all-music.html" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300">Music</a>
+                <a href="all-merch.html" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300">Shop</a>
+                <a href="blog.html" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300">Blog</a>
+                <a href="index.html#contact" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-24 min-h-screen">
+        <section class="py-16">
+            <div class="container mx-auto text-center px-4">
+                <h1 class="text-4xl md:text-6xl font-bold mb-12">All Blog Posts</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Blog Post 1 -->
+                    <div class="bg-gray-700 rounded-xl shadow-lg p-6 text-left">
+                        <h3 class="text-2xl font-semibold text-white mb-2">My Creative Process</h3>
+                        <p class="text-sm text-gray-400 mb-4">October 26, 2023</p>
+                        <p class="text-gray-300">Dive deep into the world of my music-making journey. From finding inspiration to the final mix, I'll walk you through how "Echoes of the Void" came to be...</p>
+                        <a href="#" class="read-more mt-4 inline-block text-blue-400 hover:underline font-semibold" data-post-id="creative-process">Read More &rarr;</a>
+                    </div>
+                    <!-- Blog Post 2 -->
+                    <div class="bg-gray-700 rounded-xl shadow-lg p-6 text-left">
+                        <h3 class="text-2xl font-semibold text-white mb-2">Upcoming Tour Dates</h3>
+                        <p class="text-sm text-gray-400 mb-4">October 15, 2023</p>
+                        <p class="text-gray-300">Excited to announce my first-ever tour! I'll be hitting the road this fall, playing cities across the country. Check out the full list of dates inside...</p>
+                        <a href="#" class="read-more mt-4 inline-block text-blue-400 hover:underline font-semibold" data-post-id="tour-dates">Read More &rarr;</a>
+                    </div>
+                    <!-- New Blog Post 3 -->
+                    <div class="bg-gray-700 rounded-xl shadow-lg p-6 text-left">
+                        <h3 class="text-2xl font-semibold text-white mb-2">The Story Behind "Stellar Drift"</h3>
+                        <p class="text-sm text-gray-400 mb-4">October 1, 2023</p>
+                        <p class="text-gray-300">Ever wonder what inspired my latest single? I'll take you on a journey through the ideas and feelings that shaped "Stellar Drift" from start to finish...</p>
+                        <a href="#" class="read-more mt-4 inline-block text-blue-400 hover:underline font-semibold" data-post-id="stellar-drift">Read More &rarr;</a>
+                    </div>
+                    <!-- New Blog Post 4 -->
+                    <div class="bg-gray-700 rounded-xl shadow-lg p-6 text-left">
+                        <h3 class="text-2xl font-semibold text-white mb-2">My Favorite Studio Gear</h3>
+                        <p class="text-sm text-gray-400 mb-4">September 20, 2023</p>
+                        <p class="text-gray-300">A sneak peek into my studio setup! I'll share my most beloved pieces of equipment and how they help me craft my unique sound...</p>
+                        <a href="#" class="read-more mt-4 inline-block text-blue-400 hover:underline font-semibold" data-post-id="studio-gear">Read More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Blog Post Modal -->
+    <div id="blog-modal" class="modal">
+        <div class="modal-content text-left">
+            <span class="modal-close" id="blog-close">&times;</span>
+            <h3 id="blog-title" class="text-2xl font-bold mb-4"></h3>
+            <p id="blog-content" class="text-gray-300"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-center py-8">
+        <p class="text-gray-400 text-sm">&copy; 2023 Lüdtwig Schmüdy. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const readMoreLinks = document.querySelectorAll('.read-more');
+            const blogModal = document.getElementById('blog-modal');
+            const blogClose = document.getElementById('blog-close');
+            const blogTitle = document.getElementById('blog-title');
+            const blogContent = document.getElementById('blog-content');
+
+            // Blog post data (in-memory)
+            const blogPosts = {
+                'creative-process': {
+                    title: 'My Creative Process',
+                    content: 'Music is more than just sounds; it is a canvas for emotion and storytelling. For "Echoes of the Void," I started with a core theme of introspection and the vastness of space. Each track began as a single sound or a short melodic phrase, which I then built upon layer by layer. I use a combination of vintage synthesizers and modern digital audio workstations to create a unique blend of old and new. The final step is always about feeling—I listen to the track over and over, refining the mix until it evokes the exact feeling I want to share with the listener. It is a long process, but one that is immensely rewarding.'
+                },
+                'tour-dates': {
+                    title: 'Upcoming Tour Dates',
+                    content: 'I am thrilled to announce my first-ever tour! We will be hitting the road this fall for a series of intimate shows. This is a chance for me to connect with all of you and share my music in a live setting. Here are the confirmed dates and locations so far:\n\n- Nov 5: The Starlit Room, New York\n- Nov 10: The Echo Chamber, Chicago\n- Nov 17: The Galactic Lounge, Los Angeles\n\nMore dates and venues will be announced soon, so keep an eye on this space. I cannot wait to see you all there!'
+                },
+                'stellar-drift': {
+                    title: 'The Story Behind "Stellar Drift"',
+                    content: 'In my single "Stellar Drift," I aimed to capture the feeling of being lost in a beautiful, unfamiliar place. The song’s ethereal synths and pulsing rhythm are meant to evoke the sensation of floating through the cosmos. I spent weeks perfecting the sound of the main synthesizer, trying to make it sound both alien and comforting. It’s a track that tells a story without words, inviting the listener to create their own narrative of a peaceful journey through the stars.'
+                },
+                'studio-gear': {
+                    title: 'My Favorite Studio Gear',
+                    content: 'My studio is my sanctuary. While I use many tools, a few stand out as my absolute favorites. The first is my vintage analog synthesizer, a true workhorse that provides the warmth and character you hear on most of my tracks. The second is a specific vocal effects processor that helps me create those haunting, layered harmonies. Lastly, my go-to headphones are essential for getting the perfect mix—they allow me to hear every subtle detail. These three pieces of gear are the foundation of my sound, and I couldn’t create my music without them.'
+                }
+            };
+
+            function showModal(modal) {
+                modal.classList.add('show');
+            }
+
+            function hideModal(modal) {
+                modal.classList.remove('show');
+            }
+
+            readMoreLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const postId = e.target.getAttribute('data-post-id');
+                    const post = blogPosts[postId];
+                    if (post) {
+                        blogTitle.textContent = post.title;
+                        blogContent.textContent = post.content.replace(/\n/g, '<br><br>'); // Add line breaks for paragraphs
+                        showModal(blogModal);
+                    }
+                });
+            });
+
+            blogClose.addEventListener('click', () => hideModal(blogModal));
+
+            blogModal.addEventListener('click', (e) => {
+                if (e.target.id === 'blog-modal') hideModal(blogModal);
+            });
+        });
+    </script>
+</body>
+</html>
