@@ -1,0 +1,14 @@
+<header class="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-lg">
+    <nav class="container mx-auto flex flex-col sm:flex-row items-center justify-between p-4">
+        <a routerLink="/" class="text-3xl font-bold tracking-tight text-white transition-transform hover:scale-105">
+            <img src="/images/ludtwig-schmudy.jpg" alt="Lüdtwig Schmüdy Logo" class="h-20 w-20 inline-block mr-2">
+        </a>
+        <div class="mt-4 sm:mt-0 flex flex-wrap justify-center sm:space-x-4">
+            <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact:true}" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300"><span class="hidden md:inline"><mat-icon fontIcon="home"></mat-icon></span>Home</a>
+            <a routerLink="/music" routerLinkActive="nav-active" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300"><span class="hidden md:inline"><mat-icon fontIcon="music_note"></mat-icon></span>Music</a>
+            <a routerLink="/shop" routerLinkActive="nav-active" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300"><span class="hidden md:inline"><mat-icon fontIcon="shopping_bag"></mat-icon></span>Shop</a>
+            <a routerLink="/blog" routerLinkActive="nav-active" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300"><span class="hidden md:inline"><mat-icon fontIcon="newspaper"></mat-icon></span>Blog</a>
+            <a routerLink="/contact" routerLinkActive="nav-active" class="nav-link text-gray-400 hover:text-white px-3 py-2 rounded-lg font-medium transition-colors duration-300"><span class="hidden md:inline"><mat-icon fontIcon="contact_support"></mat-icon></span>Contact</a>
+        </div>
+    </nav>
+</header>

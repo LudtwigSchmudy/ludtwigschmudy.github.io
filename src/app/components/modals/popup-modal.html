@@ -1,0 +1,42 @@
+<div id="listen-modal" class="modal {{ modalOpen ? `show` : `` }}" (click)="closeModal($event)">
+    <div class="modal-content">
+        <span class="modal-close" id="closeBtn" (click)="closeModal($event)">×</span>
+        <h3 class="text-2xl font-bold mb-4">{{ song?.title }}</h3>
+        <img [src]="song?.cover" alt="Album Cover for {{ song?.title }}" class="w-32 h-32 mb-6 mx-auto rounded-lg">
+        <p class="text-gray-400 mb-3">Choose your preferred streaming service to listen to the {{ song?.type?.toLowerCase() }}.</p>
+        <!-- <div class="flex flex-col space-y-4">
+            @if (song?.links?.spotify) {
+                <a [href]="song?.links?.spotify" target="_blank" class="bg-[#10BC4C] hover:opacity-70 text-white py-3 px-6 rounded-lg font-semibold transition-opacity duration-300">Spotify</a>
+            }
+            @if (song?.links?.apple) {
+                <a [href]="song?.links?.apple" target="_blank" class="bg-[#fa596b] hover:opacity-70 text-white py-3 px-6 rounded-lg font-semibold transition-opacity duration-300">Apple Music</a>
+            }
+            @if (song?.links?.youtube) {
+                <a [href]="song?.links?.youtube" target="_blank" class="bg-red-600 hover:opacity-70 text-white py-3 px-6 rounded-lg font-semibold transition-opacity duration-300">YouTube Music</a>
+            }
+        </div> -->
+        <div class="flex flex-row flex-wrap gap-3 justify-center mx-auto">
+            @if (song?.links?.spotify) {
+                <a [href]="song?.links?.spotify" target="_blank" class="px-4 py-1 w-30 max-w-60 h-auto bg-gray-800 hover:bg-gray-900 mx-auto rounded-xl transition-background duration-300">
+                    <img src="/images/platforms/spotify.png" alt="Spotify Logo" class="w-20 p-3 h-auto mx-auto">
+                    <h4 class="text-lg font-semibold mb-2">Spotify Music</h4>
+                </a>
+            }
+            @if (song?.links?.apple) {
+                <a [href]="song?.links?.apple" target="_blank" class="px-4 py-1 w-30 max-w-60 h-auto bg-gray-800 hover:bg-gray-900 mx-auto rounded-xl transition-background duration-300">
+                    <img src="/images/platforms/apple-music.png" alt="Apple Music Logo" class="w-20 p-3 h-auto mx-auto">
+                    <h4 class="text-lg font-semibold mb-2">Apple Music</h4>
+                </a>
+            }
+            @if (song?.links?.youtube) {
+                <a [href]="song?.links?.youtube" target="_blank" class="px-4 py-1 w-30 max-w-60 h-auto bg-gray-800 hover:bg-gray-900 mx-auto rounded-xl transition-background duration-300">
+                    <img src="/images/platforms/youtube-music.png" alt="Youtube Music Logo" class="w-20 p-3 h-auto mx-auto">
+                    <h4 class="text-lg font-semibold mb-2">Youtube Music</h4>
+                </a>
+            }
+            @if (song?.links?.others) {
+                <a [href]="song?.links?.others" target="_blank" class="bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition-background duration-300 basis-full">Others</a>
+            }
+        </div>
+    </div>
+</div>

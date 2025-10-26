@@ -1,0 +1,30 @@
+.footer-links a {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    svg {
+        fill: white;
+    }
+    
+    &:hover {
+        // opacity: 0.7;
+
+        svg.facebook-logo {
+            fill: #0866ff;
+            path + path {
+                fill: white;
+            }
+        }
+        svg.spotify-logo {
+            fill: #10BC4C;
+        }
+        svg.suno-logo {
+            fill: url(#suno-gradient);
+            // fill: #FF4A29;
+            // fill: #FFB101;
+            g {
+                fill: white;
+            }
+        }
+    }
+}

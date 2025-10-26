@@ -1,0 +1,122 @@
+<main>
+    <!-- Home Section -->
+    <section id="home" class="section bg-cover bg-center text-center relative">
+        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+        <div class="relative z-10 p-6 rounded-xl max-w-2xl">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white mb-4">Lüdtwig Schmüdy</h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8">The official home of the music, merch, and mind of Lüdtwig Schmüdy.</p>
+            <a href="#music" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105">Discover the Music</a>
+        </div>
+    </section>
+
+    <!-- Music Section -->
+    <section id="music" class="section bg-gray-800">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 flex flex-col sm:flex-row items-center justify-center space-x-4">
+                <span>Latest Releases</span>
+                <a routerLink="/music" class="text-lg font-normal text-blue-400 hover:underline">See All &rarr;</a>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center">
+                <!-- Album 1 -->
+                @for (song of songs; track song) {
+                    <div class="{{ $index == 3 ? 'hidden sm:block md:hidden' : '' }} music-card max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <img src="{{ song.cover }}" alt="Album Cover for {{ song.title }}" class="w-full h-auto">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">{{ song.title }}</h3>
+                            <p class="text-gray-400">Released {{ song.release | dateFormat }}</p>
+                            <button class="listen-btn mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
+                        </div>
+                    </div>
+                }
+                @empty {
+                    <h3 class="text-xl text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg col-span-3 empty-list-text"><mat-icon fontIcon="error"></mat-icon> No songs found</h3>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Shop Section -->
+    <section id="shop" class="section bg-gray-900">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 flex flex-col sm:flex-row items-center justify-center space-x-4">
+                <span>The Shop</span>
+                <a routerLink="/shop" class="text-lg font-normal text-blue-400 hover:underline">See All &rarr;</a>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center">
+                <!-- Album 1 -->
+                @for (item of items; track item; let i = $index) {
+                    <div class="{{ i == 3 ? 'hidden sm:block md:hidden' : '' }} max-w-[300px] bg-gray-800 rounded-xl shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                        <img src="/images/shop/{{ item.type }}.png" alt="display image for {{ item.name }}" class="w-full h-auto rounded-xl mb-4">
+                        <h3 class="text-xl font-semibold mb-2">{{ item.name }}</h3>
+                        <p class="text-lg font-bold text-blue-400 mb-4">${{ item.price }}</p>
+                        <button class="buy-btn bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full font-semibold">Buy Now</button>
+                    </div>
+                }
+                @empty {
+                    <h3 class="text-xl text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg col-span-3 empty-list-text"><mat-icon fontIcon="error"></mat-icon> No items found</h3>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="section bg-gray-800">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 flex flex-col sm:flex-row items-center justify-center space-x-4">
+                <span>The Schmüdy Blog</span>
+                <a routerLink="blog" class="text-lg font-normal text-blue-400 hover:underline">See All &rarr;</a>
+            </h2>
+            <div class="grid grid-cols-1 gap-8">
+                @for (post of posts; track post) {
+                    <div class="bg-gray-700 rounded-xl shadow-lg p-6 text-left w-9/10 max-w-[1000px] mx-auto">
+                        <h3 class="text-2xl font-semibold text-white mb-2">{{ post.title }}</h3>
+                        <p class="text-md text-gray-400 mb-4">{{ post.date | fullDateFormat }}</p>
+                        <p class="text-gray-300 text-lg post-content">{{ post.content }}</p>
+                    </div>
+                }
+                @empty {
+                    <h3 class="text-xl text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg empty-list-text"><mat-icon fontIcon="error"></mat-icon> No posts found</h3>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-gray-900">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12">Get in Touch</h2>
+            <div class="bg-gray-800 rounded-xl shadow-lg p-8 max-w-xl mx-auto relative">
+                <form id="contact-form" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-400 text-left mb-2">Name</label>
+                        <input type="text" id="name" name="name" class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring focus:ring-blue-500" placeholder="Your Name" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-400 text-left mb-2">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring focus:ring-blue-500" placeholder="your@email.com" required>
+                    </div>
+                    <div>
+                        <label for="reason" class="block text-sm font-medium text-gray-400 text-left mb-2">Reason for Contact</label>
+                        <select id="reason" name="reason" class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring focus:ring-blue-500" required>
+                            <option value="" disabled selected>Select a reason...</option>
+                            <option value="talk">Just talk</option>
+                            <option value="song-idea">Song idea</option>
+                            <option value="question">Question</option>
+                            <option value="suggestion">Suggestion</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-400 text-left mb-2">Message</label>
+                        <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring focus:ring-blue-500" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105">Send Message</button>
+                </form>
+                <div id="form-message" class="form-message mt-4 text-center opacity-0"></div>
+                <div id="contact-cover" class="backdrop-blur-[3px] w-full h-full inset-0 bg-gray-900/25 rounded-xl absolute flex flex-col items-center justify-center">
+                    <h2 class="text-3xl pb-3">Under maintenance...</h2>
+                    <p class="text-md">Just email me at <a class="text-blue-400 hover:text-blue-700 transition duration-300" href="mailto:ludtwigschmudy@gmail.com">ludtwigschmudy@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

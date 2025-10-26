@@ -1,0 +1,118 @@
+[
+    {
+        "title": "Heaven's Grace",
+        "type": "Single",
+        "release": "2025-08-14",
+        "cover": "/images/songs/heavens-grace.jpg",
+        "links": {
+            "spotify": "https://open.spotify.com/album/1gUBQQV3uomz0GPtdrWX80",
+            "apple": "https://music.apple.com/us/album/heavens-grace-single/1831769636",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_mR-7KgwEt88SVEqKZWmULM3ll4gZ14mPQ",
+            "others": "https://sndo.ffm.to/ymkoppl"
+        }
+    },
+    {
+        "title": "Walking in His Name",
+        "type": "Album",
+        "release": "2025-08-25",
+        "cover": "/images/songs/walking-in-his-name.jpg",
+        "links": {
+            "spotify": "https://open.spotify.com/album/3XFjwvTJkgBdj7yAVTtkf2",
+            "apple": "https://music.apple.com/us/album/walking-in-his-name/1833966507",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_mmrHuHW7NlMFcbL2bGYRx57DgPsrEWKu4",
+            "others": "https://sndo.ffm.to/xepbl3k"
+        },
+        "songs": [
+            "Finding the Light",
+            "Found in the Pages",
+            "Hidden Treasures",
+            "Grace Was Waiting for Me",
+            "Endless Grace",
+            "Through Dust and Desert",
+            "Walk in Your Name",
+            "Healed My Heart",
+            "Steady and Strong",
+            "Found in the Pages - Remastered"
+        ]
+    },
+    {
+        "title": "The Spirit Hits Different",
+        "type": "Album",
+        "release": "2025-09-01",
+        "cover": "/images/songs/the-spirit-hits-different.jpg",
+        "links": {
+            "spotify": "https://open.spotify.com/album/6lOqscU9YNYq4dY55bVTpY",
+            "apple": "",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_lGLTJdUmdGjCK7xRLeXGmjiONRTYRfMoM",
+            "others": "https://sndo.ffm.to/6elb4ak"
+        },
+        "songs": [
+            "AI Can Learn, but It Can't Redeem",
+            "All My Hope",
+            "The Spirit Hits Different",
+            "Even in the Darkest Night",
+            "Forever I'll Rejoice in You",
+            "Heaven's Shore",
+            "Hey Little Me",
+            "I See God in Everything",
+            "In the Gospel of Jesus Christ",
+            "O Christ, Our Healer",
+            "Scriptures Guide My Way",
+            "The Beat of the Drum",
+            "I'm Riding with the King",
+            "You Are Mine",
+            "Family Forever (Bonus Track)",
+            "Da Fam-Jam Flow (Bonus Track)"
+        ]
+    },
+    {
+        "title": "It's a Gospel Party!",
+        "type": "EP",
+        "release": "2025-09-04",
+        "cover": "/images/songs/its-a-gospel-party.jpg",
+        "links": {
+            "spotify": "https://open.spotify.com/album/4RMknhkMIVrcBVrpHWtcY9",
+            "apple": "https://music.apple.com/us/album/its-a-gospel-party-ep/1837006932?at=1001lwQy&ct=FFM_ece6cb6de83d53dfc729cec28c8d208b&ls=1&uo=4",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_l-TaF7imkQnIF5udp1mwDJ8JGvRQOllYo",
+            "others": "https://sndo.ffm.to/4wj9dnd"
+        },
+        "songs": [
+            "It's a Gospel Party",
+            "Whistle of Joy",
+            "Heaven's Overflow",
+            "God's Love, It Overflows"
+        ]
+    },
+    {
+        "title": "He's Coming Back",
+        "type": "Album",
+        "release": "2025-10-13",
+        "cover": "/images/songs/hes-coming-back.jpg",
+        "links": {
+            "spotify": "https://open.spotify.com/album/3L2Z4wryFO83pkVWX9Xva2",
+            "apple": "https://music.apple.com/us/album/hes-coming-back/1847777990",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_nsLHZMZ5NpM99Jwu0yWyyxOqYL6J6OtJw",
+            "others": "https://sndo.ffm.to/naxdk8y"
+        },
+        "songs":[
+            "Kingdom First",
+            "Better this Way",
+            "Metamorphosis",
+            "Changed by the Light",
+            "Ready for the King",
+            "Insurance",
+            "Promised Land Parade",
+            "God Makes a Way",
+            "Remembering Jesus",
+            "Hallelujah Sunrise",
+            "He's Coming Back",
+            "Your Love Still Finds Me",
+            "King of Grace",
+            "Lord of the Vineyard",
+            "My Guiding Light",
+            "Walking on Water",
+            "Changed by the Light - Remix"
+        ],
+        "presave": ""
+    }
+]

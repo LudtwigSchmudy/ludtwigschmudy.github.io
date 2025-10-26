@@ -1,0 +1,85 @@
+<main>
+    <section id="music" class="section bg-gray-800">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 space-x-4">Streaming Platforms</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-16 justify-around w-3/4 sm:w-1/1 md:max-w-[800px] mx-auto">
+                @for (p of platforms; track p) {
+                    <a href="{{ p.url }}" target="_blank" class="{{ $index == 2 ? `col-span-1 sm:col-span-2 md:col-span-1` : `` }} w-full max-w-60 bg-gray-900 mx-auto rounded-xl py-6 transform hover:scale-105 transition-transform duration-300">
+                        <img src="{{ p.image }}" alt="{{ p.name }} Logo" class="w-32 p-3 h-auto mx-auto">
+                        <h3 class="text-xl font-semibold mb-2">{{ p.name }}</h3>
+                    </a>
+                }
+                @empty {
+                    <h3 class="text-xl text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg col-span-3 empty-list-text"><mat-icon fontIcon="error"></mat-icon> None found</h3>
+                }
+            </div>
+        </div>
+    </section>
+    <section id="music" class="section bg-gray-900">
+        <div class="container mx-auto text-center relative">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 space-x-4">All Songs</h2>
+            <div class="relative sm:absolute mx-auto -top-8 sm:top-2 sm:right-6 text-white inline-flex items-center justify-center overflow-hidden rounded-xl">
+                <label for="grid-view" [ngClass]="{'bg-gray-700': selectedView == 'grid', 'bg-gray-800': selectedView == 'list'}" class="hover:bg-gray-600 p-2 flex items-center cursor-pointer transition-background duration-300">
+                    <mat-icon fontIcon="grid_view"></mat-icon>
+                </label>
+                <label for="list-view" [ngClass]="{'bg-gray-700': selectedView == 'list', 'bg-gray-800': selectedView == 'grid'}" class="hover:bg-gray-600 p-2 flex items-center cursor-pointer transition-background duration-300">
+                    <mat-icon fontIcon="reorder"></mat-icon>
+                </label>
+                <input class="hidden" type="radio" name="view-toggle" id="grid-view" value="grid" [(ngModel)]="selectedView" checked>
+                <input class="hidden" type="radio" name="view-toggle" id="list-view" value="list" [(ngModel)]="selectedView">
+            </div>
+            @if (selectedView == 'list') {
+                <div class="flex flex-row flex-wrap gap-8">
+                    @for (songL of songs; let i = $index; track songL) {
+                        <div class="max-w-[800px] w-full flex flex-wrap items-center bg-gray-700 rounded-xl shadow-lg overflow-hidden p-4 mx-auto">
+                            <img src="{{ songL.cover }}" alt="Album Cover for {{ songL.title }}" class="w-24 h-24 rounded-lg">
+                            <div class="flex flex-col items-start py-2 ml-4">
+                                <h3 class="text-2xl font-semibold">{{ songL.title }}</h3>
+                                <p class="text-gray-400">
+                                  {{ songL.release | fullDateFormat }} | {{ songL.type }}
+                                  {{ songL.songs ? `(${ songL.songs.length })` : `` }}
+                                </p>
+                                @if (songL.songs && songL.songs.length > 0) {
+                                  <button
+                                    type="button"
+                                    class="mt-2 text-blue-400 hover:underline cursor-pointer flex items-center gap-2"
+                                    (click)="toggleExpanded(i)">
+                                    <span>{{ isExpanded(i) ? 'Hide songs' : 'Show songs' }}</span>
+                                  </button>
+                                }
+                            </div>
+                            <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
+                            @if (songL.songs && songL.songs.length > 0) {
+                                <div class="flex flex-col basis-full overflow-hidden transition-all duration-300" [ngClass]="{ 'max-h-196 pt-6 opacity-100 gap-3': isExpanded(i), 'max-h-0 pt-0 opacity-0 gap-0': !isExpanded(i) }">
+                                    @for (albumSong of songL.songs; track albumSong) {
+                                        <div class="bg-gray-800 rounded-lg p-3">
+                                            <h4 class="text-lg text-gray-300">{{ albumSong }}</h4>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            @else {
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 justify-items-center">
+                    @for (songG of songs; track songG) {
+                        <div class="music-card max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                            <img src="{{ songG.cover }}" alt="Album Cover for {{ songG.title }}" class="w-full h-auto">
+                            <div class="p-6">
+                                <h3 class="text-2xl font-semibold mb-2">{{ songG.title }}</h3>
+                                <p class="text-gray-400">{{ songG.release | dateFormat }} | {{ songG.type }} {{ songG.songs ? `(${ songG.songs.length })` : `` }}</p>
+                                <button (click)="openModal(songG)" class="cursor-pointer mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
+                            </div>
+                        </div>
+                    }
+                    @empty {
+                        <h3 class="text-xl text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg col-span-3 empty-list-text"><mat-icon fontIcon="error"></mat-icon> No songs found</h3>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+    <app-popup-modal [(modalOpen)]="modalOpen" [song]="modalSong"></app-popup-modal>
+</main>
