@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Spotify",
+        "url": "https://open.spotify.com/artist/0mnpp50dS2AWS0vpW1DctS",
+        "image": "/images/platforms/spotify.png"
+    },
+    {
+        "name": "Apple Music",
+        "url": "https://music.apple.com/us/artist/l%C3%BCdtwig-schm%C3%BCdy/1831769456",
+        "image": "/images/platforms/apple-music.png"
+    },
+    {
+        "name": "YouTube Music",
+        "url": "https://music.youtube.com/channel/UC1RQ9-nGXuAMznUD5c2XGJw",
+        "image": "/images/platforms/youtube-music.png"
+    }
+]
