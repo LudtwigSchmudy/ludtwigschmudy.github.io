@@ -7,23 +7,27 @@ import { DateFormatPipe } from "../../pipes/date-format-pipe";
 import { BlogPost } from '../../services/blog';
 import { FullDateFormatPipe } from "../../pipes/full-date-format-pipe";
 import { MatIcon } from "@angular/material/icon";
+import { PopupModal } from "../../components/modals/popup-modal";
 
 
 
 @Component({
-  selector: 'app-home',
-  imports: [RouterLink,
-            DateFormatPipe,
-            FullDateFormatPipe,
-            MatIcon,
-        ],
-  templateUrl: './home.html',
-  styleUrl: './home.scss'
+    selector: 'app-home',
+    imports: [
+        RouterLink,
+        DateFormatPipe,
+        FullDateFormatPipe,
+        MatIcon, PopupModal
+    ],
+    templateUrl: './home.html',
+    styleUrl: './home.scss'
 })
 export class Home implements OnInit {
     songs!: Song[];
     items!: Item[];
     posts!: Post[];
+    modalSong: Song | null = null;
+    modalOpen: boolean = false;
 
     constructor(private songService: Songs,
                 private shopItemService: ShopItem,
@@ -42,5 +46,10 @@ export class Home implements OnInit {
         this.songService.updateSongs();
         this.shopItemService.updateItems();
         this.blogService.updatePosts();
+    }
+
+    openModal(song: Song) {
+        this.modalSong = song;
+        this.modalOpen = true;
     }
 }
