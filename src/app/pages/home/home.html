@@ -24,7 +24,7 @@
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2">{{ song.title }}</h3>
                             <p class="text-gray-400">Released {{ song.release | dateFormat }}</p>
-                            <button (click)="openModal(song)" class="listen-btn mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
+                            <button (click)="openModal(song)" class="cursor-pointer listen-btn mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
                         </div>
                     </div>
                 }
