@@ -28,6 +28,7 @@ export class Home implements OnInit {
     posts!: Post[];
     modalSong: Song | null = null;
     modalOpen: boolean = false;
+    now: number = new Date().getTime();
 
     constructor(private songService: Songs,
                 private shopItemService: ShopItem,

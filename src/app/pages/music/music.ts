@@ -22,6 +22,7 @@ export class Music implements OnInit {
     expandedIndexes = new Set<number>();
     modalSong: Song | null = null;
     modalOpen: boolean = false;
+    now: number = new Date().getTime();
 
     constructor(private songService: Songs, private platformService: Platforms) {
         songService.songs$.subscribe(() => {

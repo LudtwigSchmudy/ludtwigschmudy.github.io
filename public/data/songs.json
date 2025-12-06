@@ -112,7 +112,35 @@
             "My Guiding Light",
             "Walking on Water",
             "Changed by the Light - Remix"
-        ],
-        "presave": ""
+        ]
+    },
+    {
+        "title": "A Joyful Christmas",
+        "type": "Album",
+        "release": "2025-12-16",
+        "cover": "/images/songs/a-joyful-christmas.jpg",
+        "links": {
+            "spotify": "",
+            "apple": "",
+            "youtube": "",
+            "others": ""
+        },
+        "songs":[
+            "I Was Wrapped in the Wrong Things",
+            "Of that Holy Night",
+            "Shepherd's Noel",
+            "The Cold Winter's Flame",
+            "The Night Never Came",
+            "Across the Desert",
+            "Angels we Have Heard on High",
+            "He Came to Save",
+            "Joy to the World",
+            "Heave Ho Emmanuel",
+            "He's the Heart of Christmas",
+            "The Joy of Christmas",
+            "The Joy we Share",
+            "Heaven's Light",
+            "The Greatest Gift of All"
+        ]
     }
 ]

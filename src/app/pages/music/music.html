@@ -31,7 +31,7 @@
             @if (selectedView == 'list') {
                 <div class="flex flex-row flex-wrap gap-8">
                     @for (songL of songs; let i = $index; track songL) {
-                        <div class="max-w-[800px] w-full flex flex-wrap items-center bg-gray-700 rounded-xl shadow-lg overflow-hidden p-4 mx-auto">
+                        <div class="relative max-w-[800px] w-full flex flex-wrap items-center bg-gray-700 rounded-xl shadow-lg overflow-hidden p-4 mx-auto">
                             <img src="{{ songL.cover }}" alt="Album Cover for {{ songL.title }}" class="w-24 h-24 rounded-lg">
                             <div class="flex flex-col items-start py-2 ml-4">
                                 <h3 class="text-2xl font-semibold">{{ songL.title }}</h3>
@@ -48,7 +48,15 @@
                                   </button>
                                 }
                             </div>
-                            <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
+                            @if (songL.release.getTime() > now) {
+                                <div class="absolute top-10 right-15 bg-blue-600 text-white py-2 w-full transform -translate-y-1/2 translate-x-1/2 rotate-30 shadow-lg shadow-white/30">
+                                    <h4>Coming Soon!</h4>
+                                </div>
+                                <button class="cursor-not-allowed mr-0 ml-auto block bg-gray-400 text-gray-200 py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
+                            }
+                            @else {
+                                <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
+                            }
                             @if (songL.songs && songL.songs.length > 0) {
                                 <div class="flex flex-col basis-full overflow-hidden transition-all duration-300" [ngClass]="{ 'max-h-196 pt-6 opacity-100 gap-3': isExpanded(i), 'max-h-0 pt-0 opacity-0 gap-0': !isExpanded(i) }">
                                     @for (albumSong of songL.songs; track albumSong) {
@@ -60,18 +68,26 @@
                             }
                         </div>
                     }
+                    @empty {
+                        <h3 class="text-xl mx-auto text-center font-semibold mt-4 mb-2 py-6 px-8 bg-gray-800 rounded-xl shadow-lg col-span-3 empty-list-text"><mat-icon fontIcon="error"></mat-icon> No songs found</h3>
+                    }
                 </div>
             }
             @else {
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-12 justify-items-center">
                     @for (songG of songs; track songG) {
-                        <div class="music-card max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                        <div class="music-card relative max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
                             <img src="{{ songG.cover }}" alt="Album Cover for {{ songG.title }}" class="w-full h-auto">
                             <div class="p-6">
                                 <h3 class="text-2xl font-semibold mb-2">{{ songG.title }}</h3>
                                 <p class="text-gray-400">{{ songG.release | dateFormat }} | {{ songG.type }} {{ songG.songs ? `(${ songG.songs.length })` : `` }}</p>
                                 <button (click)="openModal(songG)" class="cursor-pointer mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
                             </div>
+                            @if (songG.release.getTime() > now) {
+                                <div class="absolute top-10 left-15 bg-blue-600 text-white py-2 w-full transform -translate-1/2 -rotate-30 shadow-lg shadow-white/30">
+                                    <h4>Coming Soon!</h4>
+                                </div>
+                            }
                         </div>
                     }
                     @empty {

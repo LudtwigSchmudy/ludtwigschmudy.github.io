@@ -19,13 +19,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center">
                 <!-- Album 1 -->
                 @for (song of songs; track song) {
-                    <div class="{{ $index == 3 ? 'hidden sm:block md:hidden' : '' }} music-card max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <div class="{{ $index == 3 ? 'hidden sm:block md:hidden' : '' }} relative music-card max-w-[300px] bg-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
                         <img src="{{ song.cover }}" alt="Album Cover for {{ song.title }}" class="w-full h-auto">
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2">{{ song.title }}</h3>
-                            <p class="text-gray-400">Released {{ song.release | dateFormat }}</p>
+                            @if (song.release.getTime() > now) {
+                                <p class="text-blue-400">{{ song.release | fullDateFormat }}</p>
+                            }
+                            @else {
+                                <p class="text-gray-400">Released {{ song.release | dateFormat }}</p>
+                            }
                             <button (click)="openModal(song)" class="cursor-pointer listen-btn mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
                         </div>
+                        @if (song.release.getTime() > now) {
+                            <div class="absolute top-10 left-15 bg-blue-600 text-white py-2 w-full transform -translate-1/2 -rotate-30 shadow-lg shadow-white/30">
+                                <h4>Coming Soon!</h4>
+                            </div>
+                        }
                     </div>
                 }
                 @empty {
