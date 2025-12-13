@@ -55,7 +55,7 @@
                                 <button class="cursor-not-allowed mr-0 ml-auto block bg-gray-400 text-gray-200 py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
                             }
                             @else {
-                                <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-2xl text-sm font-semibold">Listen Now</button>
+                                <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-2xl text-sm font-semibold transition-background duration-300">Listen Now</button>
                             }
                             @if (songL.songs && songL.songs.length > 0) {
                                 <div class="flex flex-col basis-full overflow-hidden transition-all duration-300" [ngClass]="{ 'max-h-196 pt-6 opacity-100 gap-3': isExpanded(i), 'max-h-0 pt-0 opacity-0 gap-0': !isExpanded(i) }">
@@ -81,7 +81,7 @@
                             <div class="p-6">
                                 <h3 class="text-2xl font-semibold mb-2">{{ songG.title }}</h3>
                                 <p class="text-gray-400">{{ songG.release | dateFormat }} | {{ songG.type }} {{ songG.songs ? `(${ songG.songs.length })` : `` }}</p>
-                                <button (click)="openModal(songG)" class="cursor-pointer mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full text-sm font-semibold">Listen Now</button>
+                                <button (click)="openModal(songG)" class="cursor-pointer mt-4 inline-block bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-full text-sm font-semibold transition-background duration-300">Listen Now</button>
                             </div>
                             @if (songG.release.getTime() > now) {
                                 <div class="absolute top-10 left-15 bg-blue-600 text-white py-2 w-full transform -translate-1/2 -rotate-30 shadow-lg shadow-white/30">
