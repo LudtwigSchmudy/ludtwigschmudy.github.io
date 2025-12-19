@@ -121,8 +121,8 @@
         "cover": "/images/songs/a-joyful-christmas.jpg",
         "links": {
             "spotify": "https://open.spotify.com/album/5ZvbaB1lGBFs98qcnMyfkv",
-            "apple": "",
-            "youtube": "",
+            "apple": "https://music.apple.com/us/album/a-joyful-christmas/1861800426",
+            "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_k4mKS7GD8A8RsZCSbNyUe7hogsKrIbHfM",
             "others": "https://sndo.ffm.to/or4qyq"
         },
         "songs":[
@@ -141,7 +141,6 @@
             "The Joy we Share",
             "Heaven's Light",
             "The Greatest Gift of All"
-        ],
-        "presave": "https://sndo.ffm.to/or4qyq"
+        ]
     }
 ]
