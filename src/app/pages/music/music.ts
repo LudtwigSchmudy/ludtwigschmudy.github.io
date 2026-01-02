@@ -16,42 +16,46 @@ import { PopupModal } from "../../components/modals/popup-modal";
   styleUrl: './music.scss'
 })
 export class Music implements OnInit {
-    platforms!: Platform[];
-    songs!: Song[];
-    selectedView: string = 'grid';
-    expandedIndexes = new Set<number>();
-    modalSong: Song | null = null;
-    modalOpen: boolean = false;
-    now: number = new Date().getTime();
+  platforms!: Platform[];
+  songs!: Song[];
+  selectedView: string = 'grid';
+  expandedIndexes = new Set<number>();
+  modalSong: Song | null = null;
+  modalOpen: boolean = false;
+  now: number = new Date().getTime();
 
-    constructor(private songService: Songs, private platformService: Platforms) {
-        songService.songs$.subscribe(() => {
-            this.songs = songService.getAllSongs();
-        });
-        platformService.platforms$.subscribe(() => {
-            this.platforms = platformService.getAllPlatforms();
-        });
-    }
+  constructor(private songService: Songs, private platformService: Platforms) {
+    songService.songs$.subscribe(() => {
+      this.songs = songService.getAllSongs();
+    });
+    platformService.platforms$.subscribe(() => {
+      this.platforms = platformService.getAllPlatforms();
+    });
+  }
 
-    ngOnInit(): void {
-        this.songService.updateSongs();
-        this.platformService.updatePlatforms();
-    }
+  ngOnInit(): void {
+    this.songService.updateSongs();
+    this.platformService.updatePlatforms();
+  }
 
-    toggleExpanded(index: number) {
-      if (this.expandedIndexes.has(index)) {
-        this.expandedIndexes.delete(index);
-      } else {
-        this.expandedIndexes.add(index);
-      }
-    }
+  openPresave(link: string) {
+    window.open(link, '_blank');
+  }
 
-    isExpanded(index: number): boolean {
-      return this.expandedIndexes.has(index);
+  toggleExpanded(index: number) {
+    if (this.expandedIndexes.has(index)) {
+      this.expandedIndexes.delete(index);
+    } else {
+      this.expandedIndexes.add(index);
     }
+  }
 
-    openModal(song: Song) {
-        this.modalSong = song;
-        this.modalOpen = true;
-    }
+  isExpanded(index: number): boolean {
+    return this.expandedIndexes.has(index);
+  }
+
+  openModal(song: Song) {
+      this.modalSong = song;
+      this.modalOpen = true;
+  }
 }
