@@ -149,10 +149,10 @@
     "release": "2026-01-19",
     "cover": "/images/songs/king-forever.jpg",
     "links": {
-      "spotify": "",
-      "apple": "",
-      "youtube": "",
-      "others": ""
+      "spotify": "https://open.spotify.com/album/4blCyQ7k4AP4b4F2fFFJ5t",
+      "apple": "https://music.apple.com/us/album/king-forever/1866810955",
+      "youtube": "https://music.youtube.com/playlist?list=OLAK5uy_mhYtAmGbwje4qWYH1JxFsuMRGJPLoZ9Dc",
+      "others": "https://sndo.ffm.to/vpmakrk"
     },
     "songs": [
       "All My Praise to You",
@@ -167,8 +167,7 @@
       "Shepherd of My Soul",
       "To the Tree of Life",
       "You Were There All Along"
-    ],
-    "presave": "https://sndo.ffm.to/vpmakrk"
+    ]
   },
   {
     "title": "Instrumentals",
