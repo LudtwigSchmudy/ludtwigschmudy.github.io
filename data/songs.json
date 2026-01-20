@@ -172,7 +172,7 @@
   {
     "title": "Instrumentals",
     "type": "Album",
-    "release": "2026-02-02",
+    "release": "2026-02-09",
     "cover": "/images/songs/instrumentals.jpg",
     "links": {
       "spotify": "",
@@ -180,7 +180,33 @@
       "youtube": "",
       "others": ""
     },
-    "songs": [],
+    "songs": [
+      "Endless Grace",
+      "Finding the Light",
+      "Found in the Pages",
+      "Grace Was Waiting for Me",
+      "Healed My Heart",
+      "Hidden Treasures",
+      "Steady and Strong",
+      "Through Dust and Desert",
+      "Walk in Your Name",
+      "AI Can Learn, but It Can't Redeem",
+      "All My Hope",
+      "Da Fam-Jam Flow",
+      "Even in the Darkest Night",
+      "Family Forever",
+      "Forever I'll Rejoice in You",
+      "Heaven's Shore",
+      "Hey Little Me",
+      "I See God in Everything",
+      "I'm Riding with the King",
+      "In the Gospel of Jesus Christ",
+      "O Christ, Our Healer",
+      "Scriptures Guide My Way",
+      "The Beat of the Drum",
+      "The Spirit Hits Different",
+      "You Are Mine"
+    ],
     "presave": ""
   }
 ]
