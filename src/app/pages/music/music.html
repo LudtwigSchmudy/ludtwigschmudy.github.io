@@ -29,7 +29,7 @@
         <input class="hidden" type="radio" name="view-toggle" id="list-view" value="list" [(ngModel)]="selectedView">
       </div>
       @if (selectedView == 'list') {
-        <div class="flex flex-row flex-wrap gap-8">
+        <div class="flex flex-row flex-wrap gap-8 overflow-y-auto">
           @for (songL of songs; let i = $index; track songL) {
             <div class="relative max-w-[800px] w-full flex flex-wrap items-center bg-gray-700 rounded-xl shadow-lg overflow-hidden p-4 mx-auto">
               <img src="{{ songL.cover }}" alt="Album Cover for {{ songL.title }}" class="w-24 h-24 rounded-lg">
@@ -60,7 +60,7 @@
                 <button (click)="openModal(songL)" class="cursor-pointer mr-0 ml-auto block bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-2xl text-sm font-semibold transition-background duration-300">Listen Now</button>
               }
               @if (songL.songs && songL.songs.length > 0) {
-                <div class="flex flex-col basis-full overflow-hidden transition-all duration-300" [ngClass]="{ 'max-h-196 pt-6 opacity-100 gap-3': isExpanded(i), 'max-h-0 pt-0 opacity-0 gap-0': !isExpanded(i) }">
+                <div class="flex flex-col basis-full overflow-hidden transition-all duration-300" [ngClass]="{ 'max-h-196 pt-6 opacity-100 gap-3 overflow-y-auto': isExpanded(i), 'max-h-0 pt-0 opacity-0 gap-0': !isExpanded(i) }">
                   @for (albumSong of songL.songs; track albumSong) {
                     <div class="bg-gray-800 rounded-lg p-3">
                       <h4 class="text-lg text-gray-300">{{ albumSong }}</h4>
