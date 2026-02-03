@@ -72,7 +72,7 @@ input, textarea, select {
 }
 html { height: 100%; }
 
-main > section:first-of-type {
+main > section:first-of-type, .section:first-of-type {
     margin-top: 7rem;
     @media (max-width: 640px) {
         margin-top: 10rem;
@@ -84,3 +84,26 @@ main > section:first-of-type {
     align-items: center;
     gap: 0.5rem;
 }
+
+
+
+form {
+    input:not([type="submit"]) {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+    }
+}
+
+.loading {
+    animation: loadSpin 1s linear infinite;
+}
+
+@keyframes loadSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+

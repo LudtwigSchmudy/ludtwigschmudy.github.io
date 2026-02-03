@@ -20,10 +20,10 @@
       <h2 class="text-4xl md:text-5xl font-bold mb-12 space-x-4">All Songs</h2>
       <div class="relative sm:absolute mx-auto -top-8 sm:top-2 sm:right-6 text-white inline-flex items-center justify-center overflow-hidden rounded-xl">
         <label for="grid-view" [ngClass]="{'bg-gray-700': selectedView == 'grid', 'bg-gray-800': selectedView == 'list'}" class="hover:bg-gray-600 p-2 flex items-center cursor-pointer transition-background duration-300">
-          <mat-icon fontIcon="grid_view"></mat-icon>
+          <mat-icon fontIcon="grid_view"/>
         </label>
         <label for="list-view" [ngClass]="{'bg-gray-700': selectedView == 'list', 'bg-gray-800': selectedView == 'grid'}" class="hover:bg-gray-600 p-2 flex items-center cursor-pointer transition-background duration-300">
-          <mat-icon fontIcon="reorder"></mat-icon>
+          <mat-icon fontIcon="reorder"/>
         </label>
         <input class="hidden" type="radio" name="view-toggle" id="grid-view" value="grid" [(ngModel)]="selectedView" checked>
         <input class="hidden" type="radio" name="view-toggle" id="list-view" value="list" [(ngModel)]="selectedView">

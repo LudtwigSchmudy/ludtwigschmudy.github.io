@@ -32,3 +32,58 @@ export type Platform = {
     "url": string;
     "image": string;
 }
+export type User = {
+    "displayName": string;
+    "email": string;
+    "metadata": {
+        "createdAt": string;
+        "creationTime": string;
+        "lastLoginAt": string;
+        "lastSignInTime": string;
+    };
+    "photoURL": string;
+}
+
+
+
+
+export type Product = {
+    "id"?: string;
+    "title": string;
+    "description"?: string;
+    "imageURL": string;
+    "active": boolean;
+    "price": number;
+    "type": string;
+    "songAmount"?: number;
+    "album"?: string;
+}
+
+export type CartItem = {
+    "productId": string;
+    "name": string;
+    "price": number;
+    "quantity": number;
+}
+
+export type Price = {
+    "albumTitle"?: string;
+    "productId": string;
+    "type": string;
+}
+
+export type StripeItem = {
+    "price_data": {
+        "currency": "USD";
+        "product": string;
+    };
+    "quantity": number;
+    "fbId": string;
+}
+
+export type CloudCart = {
+    "cartData": string;
+    "createdAt": string;
+    "updatedAt"?: string;
+}
+
