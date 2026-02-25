@@ -129,7 +129,7 @@
     ></div>
     <div
         [class]="`
-            bg-gray-800 rounded-xl z-10 text-center pb-6 p-9 w-min flex
+            bg-gray-800 rounded-xl z-10 text-center pb-6 p-9 w-9/10 sm:w-min flex 
             flex-col transition-all duration-200 shadow-[0_3px_6px_black]
         `"
         [ngClass]="{
@@ -147,7 +147,7 @@
                 <p class="text-lg text-gray-400 mb-6">
                     This will remove <b class="text-white">${{ removingProduct?.price }}</b> from your cart.
                 </p>
-                <div class="flex justify-between items-center gap-12 mt-3">
+                <div class="flex flex-wrap-reverse sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
                     <button
                         [class]="`
                             px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
@@ -175,7 +175,7 @@
                     Are you sure you would like to remove all items from your cart?
                     This cannot be undone.
                 </p>
-                <div class="flex justify-between items-center gap-12 mt-3">
+                <div class="flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
                     <button
                         [class]="`
                             px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
@@ -203,25 +203,38 @@
                     Are you ready to checkout? This will take you to our payment processor,
                     once you finish you will be brought back here.
                 </p>
-                <div class="flex justify-between items-center gap-12 mt-3">
+                <div class="flex flex-wrap-reverse sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
                     <button
                         [class]="`
-                            px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
-                            cursor-pointer hover:bg-blue-700 transition-all
+                            px-12 py-3 rounded-lg font-bold bg-gray-600 text-lg
+                            cursor-pointer hover:bg-gray-700 transition-all
                         `"
                         (click)="closePopup()"
                     >
                         Back
                     </button>
-                    <button
-                        [class]="`
-                            px-12 py-3 rounded-lg font-bold bg-red-600 text-lg
-                            cursor-pointer hover:bg-red-700 transition-all
-                        `"
-                        (click)="confirmCheckout()"
-                    >
-                        Checkout
-                    </button>
+                    @if (isCheckingOut) {
+                        <button
+                            [class]="`
+                                px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                                cursor-not-allowed opacity-50 flex items-center gap-2
+                            `"
+                            disabled
+                        >
+                            <mat-icon fontIcon="donut_large" class="loading"/>
+                            Loading
+                        </button>
+                    } @else {
+                        <button
+                            [class]="`
+                                px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                                cursor-pointer hover:bg-blue-800 transition-all
+                            `"
+                            (click)="confirmCheckout()"
+                        >
+                            Checkout
+                        </button>
+                    }
                 </div>
             }
         }

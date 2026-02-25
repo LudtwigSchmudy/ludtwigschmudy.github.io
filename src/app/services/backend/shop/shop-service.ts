@@ -2,113 +2,62 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { collection, query, where, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { Functions, getFunctions, httpsCallable } from 'firebase/functions';
-import { FirebaseApp } from './firebase-app';
-import { CloudCart, Price, Product, StripeItem } from '../types';
+import { FirebaseApp } from '../firebase-app/firebase-app';
+import { CloudCart, Product } from '../../../types';
 import { Router } from '@angular/router';
-
-
+import { AccountService } from '../account/account';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ShopService {
     private db;
-    private auth;
     private app;
-    private functions: Functions;
-    private cartSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([
-        {
-            "album":"He's Coming Back",
-            "active":true,
-            "type":"Track",
-            "imageURL":"/images/songs/hes-coming-back.jpg",
-            "title":"Kingdom First",
-            "price":1
-        },
-        {
-            "type":"Track",
-            "active":true,
-            "title":"King of Grace",
-            "imageURL":"/images/songs/hes-coming-back.jpg",
-            "album":"He's Coming Back",
-            "price":1
-        },
-        {
-            "type":"Track",
-            "title":"Metamorphosis",
-            "active":true,
-            "imageURL":"/images/songs/hes-coming-back.jpg",
-            "price":1,
-            "album":"He's Coming Back"
-        },
-        {
-            "active":true,
-            "imageURL":"/images/songs/the-spirit-hits-different.jpg",
-            "title":"The Spirit Hits Different",
-            "price":13,
-            "songAmount":16,
-            "type":"Album"
-        },
-        {
-            "active":true,
-            "title":"King Forever",
-            "imageURL":"/images/songs/king-forever.jpg",
-            "type":"Album",
-            "price":10,
-            "songAmount":12
-        },
-        {
-            "active":true,
-            "imageURL":"/images/songs/hes-coming-back.jpg",
-            "songAmount":17,
-            "price":14,
-            "type":"Album",
-            "title":"He's Coming Back"
-        }
-    ]);
+    private user: any = null;
+    private cartSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([]);
 
     public cart$: Observable<Product[]> = this.cartSubject.asObservable();
     
     constructor(
         private readonly appService: FirebaseApp,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly accountService: AccountService
     ) {
         this.app = this.appService.getInstance();
-        this.auth = getAuth(this.app);
         this.db = getFirestore(this.app);
-        this.functions = getFunctions(this.app);
-        this.getUserCart()
-            .then((result: CloudCart | null) => {
-                if (result === null) return;
 
-                this.cartSubject.next(JSON.parse(result.cartData));
-            })
-    }
-
-    createCheckout() {
-        const callable = httpsCallable(this.functions, 'createCheckoutSession');
-        callable({ cart: this.cartSubject.getValue() }).then(async (res: any) => {
-            window.location.href = res.url;
+        this.accountService.user.subscribe((user) => {
+            this.user = user;
+            this.getUserCart()
+                .then((cartResult: CloudCart | null) => {
+                    if (cartResult === null) return;
+                    this.cartSubject.next(JSON.parse(cartResult.cartData));
+                });
         });
     }
 
+    async createCheckout() {
+        if (!this.user) return;
+        console.log('shop-service createCheckout');
+        return await this.appService.createCheckoutSession({ cartData: JSON.stringify(this.cartSubject.getValue()) });
+    }
+
+    async getCheckoutStatus(sessionId: string) {
+        if (!sessionId) return;
+
+        return await this.appService.getStatus({ sessionId });
+    }
+
     private async getUserCart(): Promise<CloudCart | null> {
-        if (!this.auth.currentUser) {
+        if (!this.user) {
             // toast notification
             return null;
         }
-        const userId = this.auth.currentUser.uid;
+        const userId = this.user.uid;
 
         try {
             const docRef = doc(this.db, `carts/${userId}`);
             const cartDoc = await getDoc(docRef);
-
-            console.log();
-            console.log('Cart received from the cloud');
-            console.log(cartDoc.data());
-            console.log();
 
             if (cartDoc.exists()) {
                 return cartDoc.data() as CloudCart;
@@ -124,69 +73,43 @@ export class ShopService {
     }
 
     private async saveCart(): Promise<void> {
-        if (!this.auth.currentUser) {
+        if (!this.user) {
             // toast notification saying they need to login
             this.router.navigateByUrl("/login");
             return;
         }
-        const userId = this.auth.currentUser.uid;
-        console.log(`\nCurrent userId: ${userId}\n `);
+        const userId = this.user.uid;
         
-        console.log(JSON.stringify(this.cartSubject.getValue()));
-        
-        /* try {
+        try {
             const cartRef = doc(this.db, `carts/${userId}`);
             const cartDoc = await getDoc(cartRef);
             if (cartDoc.exists()) {
                 await setDoc(cartRef, {
-                    "cartData": JSON.stringify(this.cart),
+                    "cartData": JSON.stringify(this.cartSubject.getValue()),
                     "updatedAt": new Date().toUTCString(),
                     "createdAt": cartDoc.data()['createdAt']
                 });
             } else {
-                if (this.cart.length < 1) return;
+                if (this.cartSubject.getValue().length < 1) return;
 
                 await setDoc(cartRef, {
-                    "cartData": JSON.stringify(this.cart),
+                    "cartData": JSON.stringify(this.cartSubject.getValue()),
                     "createdAt": new Date().toUTCString()
                 });
             }
         } catch (error) {
             console.error('There was an error:');
             console.error(error);
-        } */
+        }
     }
 
-    /* Convert Cart from products to Stripe Products */
-    private convertCart(): StripeItem[] {
-
-
-        return [];
-    }
-
-    async addAllTracks(): Promise<void> {
+    /* async addAllTracks(): Promise<void> {
         const tracksFromJSon = await (await fetch('/data/items.json')).json();
 
         tracksFromJSon.forEach(async (track: any) => {
             // await addDoc(collection(this.db, 'products'), track)
         });
-    }
-
-    async getPrices(): Promise<Price[]> {
-        try {
-            const pQuery = query(collection(this.db, "prices"));
-
-            const qSnapshot = await getDocs(pQuery);
-            const products: Price[] = qSnapshot.docs.map((doc) => {
-                return doc.data() as Price;
-            });
-
-            return products;
-        } catch (error) {
-            console.error('Error fetching products:', error);
-            return [];
-        }
-    }
+    } */
 
     /* Fetch all active products with their prices from Firestore */
     async getProducts(): Promise<Product[]> {
@@ -202,7 +125,7 @@ export class ShopService {
             for (const doc of qSnapshot.docs) {
                 const productData = doc.data();
 
-                products.push(productData as Product);
+                products.push({ id: doc.id, ...productData } as Product);
             }
 
             return products;
@@ -223,13 +146,9 @@ export class ShopService {
             );
 
             const qSnapshot = await getDocs(pQuery);
-            const products: Product[] = [];
-
-            for (const doc of qSnapshot.docs) {
-                const productData = doc.data();
-
-                products.push(productData as Product);
-            }
+            const products: Product[] = qSnapshot.docs.map(doc => {
+                return { id: doc.id, ...doc.data() } as Product;
+            });
 
             return products;
         } catch (error) {
@@ -257,7 +176,11 @@ export class ShopService {
     }
 
     inCart(item: Product): boolean {
-        return this.cartSubject.getValue().some(itm => itm.title === item.title && itm.type === item.type);
+        const cart = this.cartSubject.getValue();
+        const itemInCart = cart.some(itm => itm.title === item.title && itm.type === item.type);
+        const albumInCart = item.type === "Track" && cart.some(itm => itm.type === "Album" && itm.title === item.album);
+
+        return itemInCart || albumInCart;
     }
 
     /* Add item to cart */
@@ -301,7 +224,7 @@ export class ShopService {
 
     /* Get user's purchase history */
     async getPurchaseHistory(): Promise<any[]> {
-        const user = this.auth.currentUser;
+        const user = this.user;
         
         if (!user) {
             console.error('User must be logged in');

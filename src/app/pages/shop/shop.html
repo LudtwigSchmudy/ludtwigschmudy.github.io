@@ -13,7 +13,7 @@
                 sticky sm:top-31 top-45 right-0 z-11 w-full block max-w-[1200px] mx-auto
                 px-3 py-5 flex justify-end h-0 mt-5 -mb-13 group items-center
             `"
-            routerLink="/cart"
+            routerLink="/shop/cart"
         >
             <span [class]="`
                 text-transparent transition-all group-hover:text-white
@@ -147,51 +147,55 @@
                 </h3>
             }
             @else {
-                @for (track of tracks; track track) {
+                @for (displayTrackData of displayTrackData; track displayTrackData) {
                     <div [class]="`
-                        music-card relative bg-gray-700 rounded-xl shadow-lg w-auto
-                        overflow-hidden transform transition-transform duration-300 flex
-                        p-3 gap-2 items-center max-w-60 pb-4 flex-col min-[880px]:gap-5
-                        min-[880px]:w-95 min-[880px]:pb-3 min-[880px]:max-w-95
-                        min-[880px]:flex-row
+                        bg-gray-700 rounded-xl shadow-lg w-full
+                        overflow-hidden transform transition-transform duration-300
+                        p-3 gap-2 pb-4
                     `">
-                        <img
-                            src="{{ track.imageURL }}"
-                            alt="Product image for {{ track.title }}"
-                            [class]="`
-                                min-[880px]:w-30 min-[880px]:h-30 rounded-md
-                                shadow-[inset_0_0_16px_6px] shadow-black w-full h-auto
-                            `"
-                        >
                         <div [class]="`
-                            flex flex-col items-center justify-center w-full
-                            min-[880px]:items-start min-[880px]:justify-start
-                            min-[880px]:w-auto
+                            flex mb-4 items-center gap-4
                         `">
-                            <h3 [class]="`
-                                text-2xl font-semibold mb truncate w-6/7 text-center
-                                min-[880px]:text-left min-[880px]:w-50
-                            `">{{ track.title }}</h3>
-                            <button
-                                [class]="`
-                                    cursor-pointer bg-blue-600
-                                    hover:bg-blue-700 text-white py-2 px-3 rounded-lg
-                                    text-sm font-semibold transition-background duration-300
-                                    flex gap-2 items-center w-max mt-3 group
-                                `"
-                                (click)="handleCart(track)"
+                            <img
+                                src="{{ displayTrackData.imageURL }}"
+                                alt="Product image for {{ displayTrackData.album }}"
+                                class="rounded-md w-auto h-20"
                             >
-                                @if (inCart(track)) {
-                                    <span class="flex group-hover:hidden items-center shrink-0"><mat-icon fontIcon="shopping_cart"/></span>
-                                    <span class="hidden group-hover:flex items-center shrink-0"><mat-icon fontIcon="delete_forever"/></span>
-                                    <span class="flex group-hover:hidden items-center shrink-0 text-left">In Cart</span>
-                                    <span class="hidden group-hover:flex items-center shrink-0 text-left">Remove</span>
-                                }
-                                @else {
-                                    <span class="flex items-center shrink-0"><mat-icon fontIcon="add_shopping_cart"/></span>
-                                    <span class="flex items-center shrink-0 text-left">Add to Cart</span>
-                                }
-                            </button>
+                            <h3 class="text-2xl line-clamp-2">Songs from {{ displayTrackData.album }}</h3>
+                        </div>
+
+                        <div [class]="`
+                            flex flex-col justify-center gap-3 w-full px-3
+                        `">
+                            @for (track of displayTrackData.songs; track track) {
+                                <div [class]="`
+                                    flex justify-between items-center
+                                `">
+                                    <h4 [class]="`
+                                        text-xl font-semibold mb truncate mr-3
+                                    `">{{ track.title }}</h4>
+                                    <button
+                                        [class]="`
+                                            cursor-pointer bg-blue-600
+                                            hover:bg-blue-700 text-white py-2 px-3 rounded-lg
+                                            text-sm font-semibold transition-background duration-300
+                                            flex gap-2 items-center w-max group shrink-0
+                                        `"
+                                        (click)="handleCart(tracks[track.index])"
+                                    >
+                                        @if (inCart(tracks[track.index])) {
+                                            <span class="flex group-hover:hidden items-center shrink-0"><mat-icon fontIcon="shopping_cart"/></span>
+                                            <span class="hidden group-hover:flex items-center shrink-0"><mat-icon fontIcon="delete_forever"/></span>
+                                            <span class="hidden sm:flex group-hover:hidden items-center shrink-0 text-left">In Cart</span>
+                                            <span class="hidden sm:group-hover:flex items-center shrink-0 text-left">Remove</span>
+                                        }
+                                        @else {
+                                            <span class="flex items-center shrink-0"><mat-icon fontIcon="add_shopping_cart"/></span>
+                                            <span class="hidden sm:flex items-center shrink-0 text-left">Add to Cart</span>
+                                        }
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </div>
                 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ShopService } from '../../services/shop-service';
+import { ShopService } from '../../services/backend/shop/shop-service';
 import { Product } from '../../types';
 import { MatIcon } from "@angular/material/icon";
 import { NgClass } from '@angular/common';
@@ -16,6 +16,7 @@ export class Cart {
     public showPopup: boolean = false;
     public popupState: "remove" | "checkout" | "clear" | null = null;
     public removingProduct: Product | undefined;
+    public isCheckingOut: boolean = false;
 
     constructor(private shopService: ShopService) {
         this.shopService.cart$.subscribe((cart: Product[]) => {
@@ -48,8 +49,37 @@ export class Cart {
         this.showPopup = true;
         this.popupState = "checkout";
     }
-    public confirmCheckout() {
-        this.shopService.createCheckout();
+    public async confirmCheckout() {
+        this.isCheckingOut = true;
+        const session = await this.shopService.createCheckout() as any;
+        
+        if (!session) return;
+        if (session?.url) {
+            const checkoutWindow = window.open(
+                session.url,
+                'Stripe Checkout',
+                `width=500,height=700`
+            );
+            if (!checkoutWindow) {
+                // Toast notification
+            } else {
+                const checkInterval = setInterval(async () => {
+                    if (checkoutWindow.closed) {
+                        clearInterval(checkInterval);
+                        
+                        const status = (await this.shopService.getCheckoutStatus(session.id) as any).status;
+                        console.log('Checkout status:', status);
+
+                        this.isCheckingOut = false;
+                        this.showPopup = false;
+                        if (status === 'paid') {
+                            this.shopService.clearCart();
+                        }
+                    }
+                }, 1000);
+            }
+            
+        }
     }
 
 

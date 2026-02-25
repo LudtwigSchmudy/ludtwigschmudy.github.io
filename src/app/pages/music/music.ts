@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Platform, Song } from '../../types';
-import { Songs } from '../../services/songs';
+import { Songs } from '../../services/music/songs';
 import { DateFormatPipe } from "../../pipes/date-format-pipe";
 import { MatIcon } from "@angular/material/icon";
-import { Platforms } from '../../services/platforms';
+import { Platforms } from '../../services/music/platforms';
 import { NgClass } from '@angular/common';
 import { FullDateFormatPipe } from "../../pipes/full-date-format-pipe";
 import { PopupModal } from "../../components/modals/popup-modal";

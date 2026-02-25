@@ -1,20 +1,21 @@
 import { Component } from '@angular/core';
-import { ShopService } from '../../services/shop-service';
-import { CartItem, Price, Product } from '../../types';
+import { ShopService } from '../../services/backend/shop/shop-service';
+import { CartItem, DisplayTrack, Price, Product } from '../../types';
 import { MatIcon } from "@angular/material/icon";
 import { NgClass } from '@angular/common';
 import { RouterLink } from "@angular/router";
 
 
 @Component({
-  selector: 'app-shop',
-  imports: [MatIcon, NgClass, RouterLink],
-  templateUrl: './shop.html',
-  styleUrl: './shop.scss'
+    selector: 'app-shop',
+    imports: [MatIcon, NgClass, RouterLink],
+    templateUrl: './shop.html',
+    styleUrl: './shop.scss'
 })
 export class Shop {
     public albums: Product[] = [];
     public tracks: Product[] = [];
+    public displayTrackData: DisplayTrack[] = [];
     public isLoading: boolean = false;
     public showCartDot: boolean = false;
     constructor(private shopService: ShopService) {
@@ -25,6 +26,27 @@ export class Shop {
         this.isLoading = true;
         const albums = await this.shopService.getProductsByType("Album");
         const tracks = await this.shopService.getProductsByType("Track");
+        
+        for (const [i, track] of tracks.entries()) {
+            const existing = this.displayTrackData.find((dt: DisplayTrack) => {
+                return dt.album === track.album;
+            });
+            const { imageURL, album, ...rest } = track as any;
+            delete rest.type;
+            delete rest.active;
+            delete rest.songAmount;
+            if (existing) {
+                existing.songs.push({...rest, index: i});
+                existing.songAmount++;
+            } else {
+                this.displayTrackData.push({
+                    imageURL: imageURL,
+                    album: album || '',
+                    songAmount: 1,
+                    songs: [{...rest, index: i}]
+                })
+            }
+        }
         
         this.albums = albums;
         this.tracks = tracks;

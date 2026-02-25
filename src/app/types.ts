@@ -48,15 +48,31 @@ export type User = {
 
 
 export type Product = {
-    "id"?: string;
+    "id": string;
     "title": string;
     "description"?: string;
     "imageURL": string;
     "active": boolean;
     "price": number;
-    "type": string;
+    "type": "Album" | "Track";
     "songAmount"?: number;
     "album"?: string;
+    "priceId"?: string;
+    "audioLink"?: string;
+}
+
+export type DisplayTrack = {
+    "imageURL": string;
+    "album": string;
+    "songAmount": number;
+    "songs": {
+        "index": number;
+        "id"?: string;
+        "uid"?: string;
+        "title": string;
+        "description"?: string;
+        "price": number;
+    }[];
 }
 
 export type CartItem = {
@@ -69,16 +85,15 @@ export type CartItem = {
 export type Price = {
     "albumTitle"?: string;
     "productId": string;
-    "type": string;
+    "priceId": string;
+    "type": "Album" | "Track";
 }
 
 export type StripeItem = {
-    "price_data": {
-        "currency": "USD";
-        "product": string;
-    };
+    "type"?: "Album" | "Track";
+    "price": string;
     "quantity": number;
-    "fbId": string;
+    "fbId"?: string;
 }
 
 export type CloudCart = {

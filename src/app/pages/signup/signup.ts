@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AccountService } from '../../services/account';
+import { AccountService } from '../../services/backend/account/account';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';

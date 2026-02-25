@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
-import { AccountService } from '../../../services/account';
+import { AccountService } from '../../../services/backend/account/account';
 import { User } from '../../../types';
 import { NgClass } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
@@ -29,8 +29,14 @@ export class AccountDropdown {
         })
     }
 
-    public openDropdown() {
-        this.dropdownOpen = true;
+    public openDropdown(keyPressed?: string) {
+        if (keyPressed) {
+            if (keyPressed === 'Enter') {
+                this.dropdownOpen = !this.dropdownOpen;
+            }
+        } else {
+            this.dropdownOpen = true;
+        }
     }
     public closeDropdown() {
         this.dropdownOpen = false;

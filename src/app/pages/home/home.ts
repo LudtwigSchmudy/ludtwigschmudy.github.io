@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Item, Post, Song } from '../../types';
-import { Songs } from '../../services/songs';
-import { ShopItem } from '../../services/shop-item';
+import { Songs } from '../../services/music/songs';
+import { ShopItem } from '../../services/backend/shop-item';
 import { DateFormatPipe } from "../../pipes/date-format-pipe";
 import { FullDateFormatPipe } from "../../pipes/full-date-format-pipe";
 import { MatIcon } from "@angular/material/icon";

@@ -9,8 +9,8 @@ import {
     onAuthStateChanged
 } from "firebase/auth";
 import { Subject } from 'rxjs';
-import { User } from '../types';
-import { FirebaseApp } from './firebase-app';
+import { User } from '../../../types';
+import { FirebaseApp } from '../firebase-app/firebase-app';
 
 
 

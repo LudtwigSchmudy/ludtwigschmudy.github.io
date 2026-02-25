@@ -6,27 +6,41 @@ import { Account } from './pages/account/account';
 import { Cart } from './pages/cart/cart';
 import { Login } from './pages/login/login';
 import { SignUp } from './pages/signup/signup';
+import { Success } from './pages/success/success';
+import { Management } from './pages/management/management';
+import { ManagerGuard } from './guards/manager.guard';
 
 export const routes: Routes = [
     {
-      path: '',
-      title: 'Lüdtwig Schmüdy - Official Website',
-      component: Home
+        path: '',
+        title: 'Lüdtwig Schmüdy - Official Website',
+        component: Home
     },
     {
-      path: 'music',
-      title: 'Music | Lüdtwig Schmüdy',
-      component: Music
+        path: 'music',
+        title: 'Music | Lüdtwig Schmüdy',
+        component: Music
     },
     {
-      path: 'shop',
-      title: 'Shop | Lüdtwig Schmüdy',
-      component: Shop
+        path: 'shop',
+        title: 'Shop | Lüdtwig Schmüdy',
+        component: Shop
     },
     {
-      path: 'cart',
-      title: 'Cart | Lüdtwig Schmüdy',
-      component: Cart
+        path: 'shop/cart',
+        title: 'Cart | Lüdtwig Schmüdy',
+        component: Cart
+    },
+    {
+        path: 'shop/result',
+        title: 'Completing Purchase | Lüdtwig Schmüdy',
+        component: Success
+    },
+    {
+        path: 'management',
+        title: 'Management',
+        component: Management,
+        canActivate: [ManagerGuard]
     },
     {
         path: 'login',
@@ -39,8 +53,8 @@ export const routes: Routes = [
         component: SignUp
     },
     {
-      path: 'account',
-      title: 'My Account',
-      component: Account
+        path: 'account',
+        title: 'My Account',
+        component: Account
     },
 ];
