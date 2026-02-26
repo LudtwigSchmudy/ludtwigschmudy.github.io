@@ -134,7 +134,7 @@ export class Management {
         }, 150);
     }
 
-    saveLinks(songs: HTMLInputElement, price: HTMLInputElement) {
+    saveLinks(price: HTMLInputElement) {
         
     }
 
