@@ -71,9 +71,9 @@ export class FirebaseApp {
         return result.data as Product[];
     }
 
-    public async manageItem(data: { itemData: string, action: 'create' | 'edit' | 'delete' }) {
+    public async manageItem(data: { itemData: string, action: 'create' | 'edit' | 'delete' }): Promise<string> {
         const result = await httpsCallable(this.functions, 'manageItem')(data);
-        return result.data;
+        return '' + result.data;
     }
 
     public getInstance() {

@@ -64,7 +64,7 @@ export class Management {
         return (songCount - (Math.floor(songCount/5)));
     }
 
-    openEditForm(item: Product) {
+    openEditForm(item: Product | null) {
         this.selectedItem = item;
         this.shopItemForm = new FormGroup({
             id: new FormControl(this.selectedItem?.id || ''),
@@ -109,6 +109,10 @@ export class Management {
         this.selectedItem = item;
         this.showLinkPopup = true;
     }
+    saveLinks(price: HTMLInputElement) {
+        if (this.selectedItem?.priceId === price.value) return;
+
+    }
     closeLinkPopup(modal: HTMLDivElement) {
         modal.classList.remove('popup-modal');
         modal.classList.add('modal-closing');
@@ -122,8 +126,28 @@ export class Management {
         this.selectedItem = item;
         this.showDeletePopup = true;
     }
-    confirmDelete() {
-        if (this.selectedItem) this.deleteItem(this.selectedItem);
+    confirmDelete(modal: HTMLDivElement) {
+        if (!this.selectedItem) return;
+        this.deleteLoading = true;
+        this.appService
+            .manageItem({
+                itemData: JSON.stringify(this.selectedItem),
+                action: 'delete'
+            })
+            .then(result => {
+                console.log(result);
+                this.products = this.products.filter(itm => {
+                    console.log('Item\'s id:', itm.id);
+                    console.log('Resulting id:', result.replaceAll('"', ''));
+                    return itm.id != result.replaceAll('"', '')
+                });
+                this.deleteLoading = false;
+                this.closeDeletePopup(modal);
+            })
+            .catch(error => {
+                console.error(error);
+                this.deleteLoading = false;
+            })
     }
     closeDeletePopup(modal: HTMLDivElement) {
         modal.classList.remove('popup-modal');
@@ -134,9 +158,6 @@ export class Management {
         }, 150);
     }
 
-    saveLinks(price: HTMLInputElement) {
-        
-    }
 
     convertName(name: string) {
         return this.appService.basifyName(name);
@@ -178,37 +199,76 @@ export class Management {
         }
     }
 
-
-    private SubmitNewItem(data: any) {
-
-    }
-    private UpdateItem(data: any) {
-
-    }
-    handleFormSubmit() {
+    handleFormSubmit(modal: HTMLDivElement) {
         if (this.shopItemForm.invalid) return;
-        if (this.selectedItem) this.UpdateItem(this.shopItemForm.value);
-        else this.SubmitNewItem(this.shopItemForm.value);
-    }
-
-
-    editItem(item: Product) {
-        this.appService.manageItem({
-            itemData: JSON.stringify(item),
-            action: 'edit'
-        })
-    }
-    deleteItem(item: Product) {
-        this.appService.manageItem({
-            itemData: JSON.stringify(item),
-            action: 'delete'
-        })
-    }
-    createItem(item: Product) {
-        this.appService.manageItem({
-            itemData: JSON.stringify(item),
-            action: 'create'
-        })
+        this.editLoading = true;
+        this.shopItemForm.patchValue({ price: this.calculatePrice() })
+        console.log(this.shopItemForm.value);
+        const fVal = this.shopItemForm.value;
+        if (fVal.type === "Track") {
+            delete fVal.songAmount;
+        }
+        else if (fVal.type === "Album") {
+            delete fVal.album;
+        }
+        
+        if (this.selectedItem) {
+            this.appService
+                .manageItem({
+                    itemData: JSON.stringify({
+                        id: this.selectedItem.id,
+                        ...this.shopItemForm.value
+                    }),
+                    action: 'edit'
+                })
+                .then(result => {
+                    if (result) {
+                        const r = JSON.parse(result);
+                        console.log(r);
+                        this.products = this.products.map(itm => {
+                            if (itm.id === r.id) {
+                                return r;
+                            } else {
+                                return itm;
+                            }
+                        })
+                    }
+                    this.editLoading = false;
+                    this.closeForm(modal);
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.editLoading = false;
+                })
+        }
+        else {
+            delete fVal.id;
+            this.appService
+                .manageItem({
+                    itemData: JSON.stringify(this.shopItemForm.value),
+                    action: 'create'
+                })
+                .then(result => {
+                    if (result) {
+                        const r = JSON.parse(result);
+                        console.log(r);
+                        this.products.splice(
+                            this.products.findIndex(itm => {
+                                return itm.active === r.active &&
+                                       itm.type === r.type;
+                            }),
+                            0,
+                            r
+                        )
+                    }
+                    this.editLoading = false;
+                    this.closeForm(modal);
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.editLoading = false;
+                })
+        }
     }
 
     handleTypeChange(typeValue: any) {
