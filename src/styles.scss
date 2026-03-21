@@ -59,7 +59,7 @@ main > section:first-of-type, .section:first-of-type {
     gap: 0.5rem;
 }
 
-*:focus {
+*:focus-visible {
     box-shadow: inset 0 0 2px 2px oklch(27.8% 0.033 256.848),
                 0 0 0 3px oklch(54.6% 0.245 262.881) !important;
     outline: none;
