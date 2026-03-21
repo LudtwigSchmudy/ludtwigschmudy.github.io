@@ -7,7 +7,7 @@ import {
     httpsCallable
 } from 'firebase/functions';
 import { getStorage, ref, uploadBytes, getMetadata } from "firebase/storage";
-import { Product } from '../../../types';
+import { DownloadFiles, Product } from '../../../types';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDnYPpoX9IzEQeZM5ZgEbGZ_3KfGmhqKwo",
@@ -45,7 +45,6 @@ export class FirebaseApp {
     }
 
     public async createCheckoutSession(data: any) {
-        console.log('Creating checkout session');
         const fn = httpsCallable(this.functions, 'createCheckoutSession');
         const result = await fn(data);
         return result.data;
@@ -55,6 +54,23 @@ export class FirebaseApp {
         const fn = httpsCallable(this.functions, 'getStatus');
         const result = await fn(data);
         return result.data;
+    }
+
+    public async getSessionDownloads(data: any): Promise<DownloadFiles[] | null> {
+        const fn = httpsCallable(this.functions, 'getSessionDownload');
+        const result = await fn(data);
+        return result.data as DownloadFiles[] | null;
+    }
+
+    public async getPurchaseDownloads(): Promise<DownloadFiles[] | null> {
+        const fn = httpsCallable(this.functions, 'getPurchaseDownloads');
+        const result = await fn();
+        return result.data as DownloadFiles[] | null;
+    }
+
+    public async savePurchases(data: any): Promise<void> {
+        const fn = httpsCallable(this.functions, 'savePurchases');
+        await fn(data);
     }
 
     public async isManager(): Promise<boolean> {
@@ -80,7 +96,7 @@ export class FirebaseApp {
         return this.app;
     }
 
-    public async uploadSongFile(file: File | FileList, title?: string): Promise<Array<{ name: string, uploaded: boolean, path: string, error?: any }>> {
+    public async uploadSongFile(file: File | FileList, title: string): Promise<Array<{ name: string, uploaded: boolean, path: string, error?: any }>> {
         const results: Array<{ name: string, uploaded: boolean, path: string, error?: any }> = [];
 
         const uploadIfNotExists = async (fileObj: File, path: string) => {
@@ -105,9 +121,9 @@ export class FirebaseApp {
         };
 
         if (file instanceof File) {
-            const path = `songs/${this.basifyName(file.name)}`;
+            const path = `songs/${this.basifyName(title)}/${this.basifyName(file.name)}`;
             await uploadIfNotExists(file, path);
-        } else if (file instanceof FileList && title != undefined) {
+        } else if (file instanceof FileList) {
             const tasks: Promise<void>[] = [];
             for (let i = 0; i < file.length; i++) {
                 const fileInstance = file.item(i)!;

@@ -102,3 +102,18 @@ export type CloudCart = {
     "updatedAt"?: string;
 }
 
+export type FileData = {
+    "name": string;
+    "path": string;
+}
+
+export type DownloadFiles = {
+    "type": "Album" | "Track";
+    "data": FileData[];
+}
+
+export type Toast = {
+    "message": string,
+    "type": "error" | "success" | "info";
+    "state": "open" | "closing" | "closed";
+}

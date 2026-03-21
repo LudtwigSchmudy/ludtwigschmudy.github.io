@@ -109,10 +109,6 @@ export class Management {
         this.selectedItem = item;
         this.showLinkPopup = true;
     }
-    saveLinks(price: HTMLInputElement) {
-        if (this.selectedItem?.priceId === price.value) return;
-
-    }
     closeLinkPopup(modal: HTMLDivElement) {
         modal.classList.remove('popup-modal');
         modal.classList.add('modal-closing');
@@ -187,7 +183,12 @@ export class Management {
                 })
         } else {
             this.appService
-                .uploadSongFile(input.files[0])
+                .uploadSongFile(
+                    input.files[0],
+                    (this.selectedItem.type === "Track" ?
+                    this.selectedItem?.album :
+                    this.selectedItem?.title) || ""
+                )
                 .then(res => {
                     console.log(res);
                     this.fileUploading = false;

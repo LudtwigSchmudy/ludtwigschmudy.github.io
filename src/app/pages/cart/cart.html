@@ -117,6 +117,51 @@
 
 <div
     class="fixed inset-0 z-100 flex items-center justify-center"
+    [ngClass]="{ 'pointer-events-none': !isDownloading }"
+>
+    <div
+        class="absolute inset-0 transition-all"
+        [ngClass]="{
+            'pointer-events-none bg-transparent backdrop-blur-none': !isDownloading,
+            'pointer-events-normal bg-gray-500/20 backdrop-blur-xs': isDownloading
+        }"
+    ></div>
+    <div
+        [class]="`
+            bg-gray-800 rounded-xl z-10 text-center pb-6 p-9 w-9/10 sm:w-min flex 
+            flex-col transition-all duration-200 shadow-[0_3px_6px_black] min-w-100
+        `"
+        [ngClass]="{
+            'scale-0 pointer-events-none translate-y-20 opacity-0': !isDownloading,
+            'scale-100 translate-y-0 opacity-100': isDownloading
+        }"
+    >
+        <h3 class="text-2xl mb-5">
+            @switch (step) {
+                @default { Finalizing... }
+                @case ('download') { Downloading... }
+                @case ('zip') { Zipping... }
+                @case ('done') { Saving... }
+            }
+        </h3>
+        <div [class]="`
+            w-full max-w-100 rounded-full bg-gray-900 h-5 overflow-hidden ring-2
+            ring-gray-900
+        `">
+            <div
+                class="w-0 h-5 rounded-full bg-blue-800 transition-all duration-200"
+                [ngClass]="{
+                    'w-1/3': step === 'download',
+                    'w-2/3': step === 'zip',
+                    'w-3/3': step === 'done'
+                }"
+            ></div>
+        </div>
+    </div>
+</div>
+
+<div
+    class="fixed inset-0 z-100 flex items-center justify-center"
     [ngClass]="{ 'pointer-events-none': !showPopup }"
 >
     <div

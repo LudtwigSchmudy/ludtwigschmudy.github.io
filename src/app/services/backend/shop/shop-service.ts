@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { collection, query, where, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
 import { getFirestore } from "firebase/firestore";
 import { FirebaseApp } from '../firebase-app/firebase-app';
-import { CloudCart, Product } from '../../../types';
+import { CloudCart, DownloadFiles, Product } from '../../../types';
 import { Router } from '@angular/router';
 import { AccountService } from '../account/account';
 
@@ -44,8 +44,22 @@ export class ShopService {
 
     async getCheckoutStatus(sessionId: string) {
         if (!sessionId) return;
-
         return await this.appService.getStatus({ sessionId });
+    }
+
+    async sessionDownloads(sessionId: string): Promise<DownloadFiles[] | null> {
+        if (!sessionId) return null;
+        return await this.appService.getSessionDownloads({ sessionId });
+    }
+
+    async purchaseDownloads(): Promise<DownloadFiles[] | null> {
+        if (!this.user) return null;
+        return await this.appService.getPurchaseDownloads();
+    }
+
+    async savePurchases(sessionId: string) {
+        if (!this.user) throw new Error("You must be logged in!");
+        return await this.appService.savePurchases({ sessionId })
     }
 
     private async getUserCart(): Promise<CloudCart | null> {
@@ -59,14 +73,9 @@ export class ShopService {
             const docRef = doc(this.db, `carts/${userId}`);
             const cartDoc = await getDoc(docRef);
 
-            if (cartDoc.exists()) {
-                return cartDoc.data() as CloudCart;
-            }
-            else {
-                return null;
-            }
+            if (cartDoc.exists()) return cartDoc.data() as CloudCart;
+            else return null;
         } catch (error) {
-            console.error('There was an error:');
             console.error(error);
             return null;
         }

@@ -3,6 +3,7 @@ import { ShopService } from '../../services/backend/shop/shop-service';
 import { Product } from '../../types';
 import { MatIcon } from "@angular/material/icon";
 import { NgClass } from '@angular/common';
+import { DownloadZip } from '../../services/backend/download/download-zip';
 
 @Component({
   selector: 'app-cart',
@@ -17,8 +18,13 @@ export class Cart {
     public popupState: "remove" | "checkout" | "clear" | null = null;
     public removingProduct: Product | undefined;
     public isCheckingOut: boolean = false;
+    public isDownloading: boolean = false;
+    public step: "" | "download" | "zip" | "done" = "";
 
-    constructor(private shopService: ShopService) {
+    constructor(
+        private shopService: ShopService,
+        private zipService: DownloadZip,
+    ) {
         this.shopService.cart$.subscribe((cart: Product[]) => {
             this.cart = cart;
             this.total = this.cart.reduce((p, c) => p + c.price, 0);
@@ -73,12 +79,27 @@ export class Cart {
                         this.isCheckingOut = false;
                         this.showPopup = false;
                         if (status === 'paid') {
-                            this.shopService.clearCart();
+                            this.isDownloading = true;
+                            await this.shopService.savePurchases(session.id);
+                            this.step = 'download';
+                            const downloads = await this.shopService.sessionDownloads(session.id);
+
+                            if (downloads) {
+                                this.step = 'zip';
+                                await this.zipService.downloadZip(downloads);
+                                this.shopService.clearCart();
+                                this.step = 'done';
+                                setTimeout(() => {
+                                    this.isDownloading = false;
+                                    setTimeout(() => {
+                                        this.step = "";
+                                    }, 300);
+                                }, 1000);
+                            }
                         }
                     }
                 }, 1000);
             }
-            
         }
     }
 
