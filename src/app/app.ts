@@ -17,7 +17,6 @@ export class App {
     message: string = '';
     constructor(private readonly toastService: ToastService) {
         this.toastService.toast$.subscribe(toast => {
-            console.log(JSON.stringify(toast));
             if (toast.length > 0) {
                 this.type = toast[0].type;
                 this.state = toast[0].state;

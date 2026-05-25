@@ -4,6 +4,7 @@ import { Product } from '../../types';
 import { MatIcon } from "@angular/material/icon";
 import { NgClass } from '@angular/common';
 import { DownloadZip } from '../../services/backend/download/download-zip';
+import { ToastService } from '../../services/ui/toast-service';
 
 @Component({
   selector: 'app-cart',
@@ -24,6 +25,7 @@ export class Cart {
     constructor(
         private shopService: ShopService,
         private zipService: DownloadZip,
+        private toastService: ToastService
     ) {
         this.shopService.cart$.subscribe((cart: Product[]) => {
             this.cart = cart;
@@ -59,7 +61,11 @@ export class Cart {
         this.isCheckingOut = true;
         const session = await this.shopService.createCheckout() as any;
         
-        if (!session) return;
+        if (!session) {
+            this.toastService.newToast('error', 'Unable to create checkout session');
+            this.isCheckingOut = false;
+            return
+        }
         if (session?.url) {
             const checkoutWindow = window.open(
                 session.url,
@@ -67,39 +73,45 @@ export class Cart {
                 `width=500,height=700`
             );
             if (!checkoutWindow) {
-                // Toast notification
-            } else {
-                const checkInterval = setInterval(async () => {
-                    if (checkoutWindow.closed) {
-                        clearInterval(checkInterval);
-                        
-                        const status = (await this.shopService.getCheckoutStatus(session.id) as any).status;
-                        console.log('Checkout status:', status);
+                this.toastService.newToast('error', 'Popup window blocked. Check if popups are blocked');
+                this.isCheckingOut = false;
+                return
+            }
+            
+            const checkInterval = setInterval(async () => {
+                if (checkoutWindow.closed) {
+                    clearInterval(checkInterval);
+                    
+                    const status = (await this.shopService.getCheckoutStatus(session.id) as any).status;
+                    console.log('Checkout status:', status);
 
-                        this.isCheckingOut = false;
-                        this.showPopup = false;
-                        if (status === 'paid') {
-                            this.isDownloading = true;
-                            await this.shopService.savePurchases(session.id);
-                            this.step = 'download';
-                            const downloads = await this.shopService.sessionDownloads(session.id);
+                    this.isCheckingOut = false;
+                    this.showPopup = false;
+                    if (status === 'paid') {
+                        this.isDownloading = true;
+                        await this.shopService.savePurchases(session.id);
+                        this.step = 'download';
+                        const downloads = await this.shopService.sessionDownloads(session.id);
 
-                            if (downloads) {
-                                this.step = 'zip';
-                                await this.zipService.downloadZip(downloads);
-                                this.shopService.clearCart();
-                                this.step = 'done';
+                        if (downloads) {
+                            this.step = 'zip';
+                            await this.zipService.downloadZip(downloads);
+                            this.shopService.clearCart();
+                            this.step = 'done';
+                            setTimeout(() => {
+                                this.isDownloading = false;
                                 setTimeout(() => {
-                                    this.isDownloading = false;
-                                    setTimeout(() => {
-                                        this.step = "";
-                                    }, 300);
-                                }, 1000);
-                            }
+                                    this.step = "";
+                                }, 300);
+                            }, 1000);
                         }
                     }
-                }, 1000);
-            }
+                    else {
+                        this.toastService.newToast('error', 'Invoice was not paid')
+                        this.isCheckingOut = false;
+                    }
+                }
+            }, 1000);
         }
     }
 

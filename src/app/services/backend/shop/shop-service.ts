@@ -3,9 +3,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { collection, query, where, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
 import { getFirestore } from "firebase/firestore";
 import { FirebaseApp } from '../firebase-app/firebase-app';
-import { CloudCart, DownloadFiles, Product } from '../../../types';
+import { CloudCart, DownloadFiles, Product, Purchase, PurchaseData, SessionStatus } from '../../../types';
 import { Router } from '@angular/router';
 import { AccountService } from '../account/account';
+import { ToastService } from '../../ui/toast-service';
 
 @Injectable({
     providedIn: 'root',
@@ -15,13 +16,19 @@ export class ShopService {
     private app;
     private user: any = null;
     private cartSubject: BehaviorSubject<Product[]> = new BehaviorSubject<Product[]>([]);
+    private productsLocal: { "Album": Product[], "Track": Product[] } = {
+        "Album": [],
+        "Track": []
+    }
+    private purchases: PurchaseData | null = null;
 
     public cart$: Observable<Product[]> = this.cartSubject.asObservable();
     
     constructor(
         private readonly appService: FirebaseApp,
         private readonly router: Router,
-        private readonly accountService: AccountService
+        private readonly accountService: AccountService,
+        private readonly toastService: ToastService
     ) {
         this.app = this.appService.getInstance();
         this.db = getFirestore(this.app);
@@ -38,7 +45,6 @@ export class ShopService {
 
     async createCheckout() {
         if (!this.user) return;
-        console.log('shop-service createCheckout');
         return await this.appService.createCheckoutSession({ cartData: JSON.stringify(this.cartSubject.getValue()) });
     }
 
@@ -64,7 +70,7 @@ export class ShopService {
 
     private async getUserCart(): Promise<CloudCart | null> {
         if (!this.user) {
-            // toast notification
+            this.toastService.newToast("info", "Please login to access your cart");
             return null;
         }
         const userId = this.user.uid;
@@ -84,6 +90,7 @@ export class ShopService {
     private async saveCart(): Promise<void> {
         if (!this.user) {
             // toast notification saying they need to login
+            this.toastService.newToast( "error", "To use the shop, you need to login");
             this.router.navigateByUrl("/login");
             return;
         }
@@ -107,6 +114,7 @@ export class ShopService {
                 });
             }
         } catch (error) {
+            this.toastService.newToast("error", "There was an error")
             console.error('There was an error:');
             console.error(error);
         }
@@ -145,24 +153,30 @@ export class ShopService {
     }
 
     /* Fetch all products by specified type */
-    async getProductsByType(type: string): Promise<Product[]> {
-        try {
-            const pQuery = query(
-                collection(this.db, "products"),
-                where("active", "==", true),
-                where("type", "==", type),
-                orderBy(type == "Track" ? "album" : "title", "asc")
-            );
+    async getProductsByType(type: "Album" | "Track"): Promise<Product[]> {
+        if (this.productsLocal[type].length > 0) {
+            return this.productsLocal[type];
+        } else {
+            try {
+                const pQuery = query(
+                    collection(this.db, "products"),
+                    where("active", "==", true),
+                    where("type", "==", type),
+                    orderBy(type == "Track" ? "album" : "title", "asc")
+                );
+    
+                const qSnapshot = await getDocs(pQuery);
+                const products: Product[] = qSnapshot.docs.map(doc => {
+                    return { id: doc.id, ...doc.data() } as Product;
+                });
 
-            const qSnapshot = await getDocs(pQuery);
-            const products: Product[] = qSnapshot.docs.map(doc => {
-                return { id: doc.id, ...doc.data() } as Product;
-            });
-
-            return products;
-        } catch (error) {
-            console.error('Error fetching products:', error);
-            return [];
+                this.productsLocal[type] = products;
+    
+                return products;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                return [];
+            }
         }
     }
 
@@ -194,21 +208,76 @@ export class ShopService {
 
     /* Add item to cart */
     addToCart(item: Product): boolean {
-        const current = this.cartSubject.getValue();
+        var current = this.cartSubject.getValue();
         if (current.find(itm => itm.title === item.title && itm.type === item.type)) {
+            this.toastService.newToast("info", `${item.type}: ${item.title} already in cart`);
             return false;
         } else {
-            this.cartSubject.next([...current, item]);
-            this.saveCart();
-            return true;
+            if (item.type === "Album") {
+                /*
+                    Check if there are tracks from this album currently in the cart
+                    if there is, remove the tracks, and add the album, otherwise
+                    just add the album to the cart
+                */
+                const tracksInCart = current.find(itm => itm.type === "Track" && itm?.album === item.title);
+                
+                if (tracksInCart) {
+                    const adjustedCart = current.filter(itm => !(itm.type === "Track" && itm?.album === item.title))
+                    this.toastService.newToast("info", `${item.type}: ${item.title} added to cart, individual album tracks removed`);
+                    this.cartSubject.next([...adjustedCart, item]);
+                } else {
+                    this.toastService.newToast("info", `${item.type}: ${item.title} added to cart`);
+                    this.cartSubject.next([...current, item]);
+                }
+                this.saveCart();
+                return true;
+            } else {
+                /*
+                    Check if all tracks from one album is in the cart,
+                    if so, remove all tracks, and add the album,
+                    otherwise, keep it how it is
+                */
+                current = [...current, item]
+                const allTracksInCart = current.filter(itm => itm.type === "Track" && itm.album === item.album)
+                const album = this.productsLocal.Album.find(itm => itm.title === item.album)
+
+                if (album && allTracksInCart.length === album.songAmount) {
+                    console.log(album)
+                    console.log(allTracksInCart)
+                    // remove all album tracks
+                    current = current.filter(itm => !(itm.type === "Track" && itm.album === item.album));
+                    console.log([...current, album])
+                    this.cartSubject.next([...current, album])
+                } else {
+                    this.toastService.newToast("info", `${item.type}: ${item.title} added to cart`);
+                    this.cartSubject.next(current);
+                }
+                this.saveCart();
+                return true;
+            }
         }
     }
 
     /* Remove item from cart */
     removeFromCart(item: Product): void {
-        const updated = this.cartSubject.getValue().filter(itm => !(itm.title === item.title && itm.type === item.type));
-        this.cartSubject.next(updated);
-        this.saveCart();
+        const current = this.cartSubject.getValue();
+        if (item.type === "Track") {
+            const albumInCart = current.find(itm => itm.title === item.album && itm.type === "Album");
+            
+            if (albumInCart) {
+                this.toastService.newToast("info", "Album is in cart, you can't remove individual track")
+            } else {
+                const updated = current.filter(itm => !(itm.title === item.title && itm.type === item.type));
+                this.cartSubject.next(updated);
+                this.toastService.newToast("info", `${item.type}: ${item.title} was removed`)
+                this.saveCart();
+            }
+        } else {
+            const updated = current.filter(itm => !(itm.title === item.title && itm.type === item.type));
+            this.cartSubject.next(updated);
+            this.toastService.newToast("info", `${item.type}: ${item.title} was removed`)
+            this.saveCart();
+        }
     }
 
     getCartAmount(): number {
@@ -232,30 +301,19 @@ export class ShopService {
     }
 
     /* Get user's purchase history */
-    async getPurchaseHistory(): Promise<any[]> {
-        const user = this.user;
-        
-        if (!user) {
+    async getPurchaseHistory(limit?: number, start?: number, status?: SessionStatus): Promise<PurchaseData> {
+        if (!this.user) {
             console.error('User must be logged in');
-            return [];
+            return {
+                data: [],
+                has_more: false
+            };
         }
 
-        try {
-            const ordersRef = collection(this.db, "users", user.uid, "orders");
-            const snapshot = await getDocs(ordersRef);
-            const orders: any[] = [];
-
-            snapshot.forEach((doc) => {
-                orders.push({
-                    id: doc.id,
-                    ...doc.data()
-                });
-            });
-
-            return orders;
-        } catch (error) {
-            console.error('Error fetching purchase history:', error);
-            return [];
+        if (!this.purchases) {
+            return await this.appService.getPurchases({ limit: 50 })
+        } else {
+            return this.purchases;
         }
     }
 }

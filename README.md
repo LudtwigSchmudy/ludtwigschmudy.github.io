@@ -8,6 +8,7 @@ The official website for the Christian Artist, Lüdtwig Schmüdy. Allows people 
 - [ ] Show toast notifications for errors, successful interactions, and interaction info.
 - [ ] Shorten purchase metadata so Stripe doesn't fail.
 - [ ] Create stripe customer on account creation, for easier Stripe data accessibility.
+    - [ ] Possibly do it when someone tries to purchase something
 - [ ] Make settings page.
     - [ ] Make page for user settings.
     - [ ] Make page for purchase history.

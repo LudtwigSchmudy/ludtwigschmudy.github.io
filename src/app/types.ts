@@ -117,3 +117,23 @@ export type Toast = {
     "type": "error" | "success" | "info";
     "state": "open" | "closing" | "closed";
 }
+
+export type Purchase = {
+    "id": string,
+    "total": number,
+    "metadata": {
+        "fbId": string,
+        "items": {
+            "title": string,
+            "type": "Album" | "Track",
+            "album"?: string
+        }[]
+    }
+}
+
+export type PurchaseData = {
+    "data": Purchase[],
+    "has_more": boolean
+}
+
+export type SessionStatus = "complete" | "open" | "expired";

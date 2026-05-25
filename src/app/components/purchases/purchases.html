@@ -1,0 +1,42 @@
+<section class="p-12 w-full max-w-[1200px] mx-auto">
+    <!-- <h1 class="text-4xl md:text-5xl font-bold text-center pt-3 pb-6">Your Purchases</h1> -->
+
+    <div class="w-full">
+        @for (purchase of purchases; track $index) {
+            <div class="`
+                w-95/100 mx-auto p-3 overflow-x-hidden bg-gray-900 rounded-lg
+            `">
+                <h2 class="text-3xl px-3">Purchase #{{ $index+1 }}</h2>
+                <div class="flex flex-col w-full p-3">
+                    @for (item of purchase.metadata.items; track $index) {
+                        <div class="flex justify-between items-center p-3">
+                            <h3 class="text-xl shrink-0">
+                                {{ item.type }}
+                            </h3>
+                            <hr class="w-full mt-4 mx-2 border-t-2 border-dashed border-gray-500/50"/>
+                            <h3 class="text-xl shrink-0">
+                                {{ item.title }}
+                            </h3>
+                        </div>
+                    }
+                </div>
+                <hr class="border-gray-500 border-dashed my-2 w-full mx-auto"/>
+                <div class="flex justify-between items-center gap-2 mt-2 p-3">
+                    <h3 class="text-xl">Total:</h3>
+                    <span class="text-xl relative flex gap-0.5">
+                        ${{ purchase.total / 100 }}
+                        <span class="text-sm! h-full inline-flex items-start">00</span>
+                    </span>
+                </div>
+            </div>
+        }
+        @empty {
+            <div class="w-95/100 mx-auto p-3 flex items-center justify-between rounded-lg">
+                <div>
+                    <span class="text-sm text-gray-400">Notice</span>
+                    <h3 class="text-xl">There is nothing in your cart</h3>
+                </div>
+            </div>
+        }
+    </div>
+</section>

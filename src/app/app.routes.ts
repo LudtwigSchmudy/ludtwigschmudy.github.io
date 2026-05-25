@@ -9,6 +9,8 @@ import { SignUp } from './pages/signup/signup';
 import { Success } from './pages/success/success';
 import { Management } from './pages/management/management';
 import { ManagerGuard } from './guards/manager.guard';
+import { Settings } from './components/settings/settings';
+import { Purchases } from './components/purchases/purchases';
 
 export const routes: Routes = [
     {
@@ -55,6 +57,23 @@ export const routes: Routes = [
     {
         path: 'account',
         title: 'My Account',
-        component: Account
+        component: Account,
+        children: [
+            {
+                path: '',
+                redirectTo: 'settings',
+                pathMatch: 'full'
+            },
+            {
+                path: 'settings',
+                title: 'Account Settings',
+                component: Settings
+            },
+            {
+                path: 'purchases',
+                title: 'Purchase History',
+                component: Purchases
+            }
+        ]
     },
 ];

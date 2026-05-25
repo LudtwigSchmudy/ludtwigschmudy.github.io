@@ -1,0 +1,10 @@
+.aSettings.active ~ .anchor-style {
+    transform: translateX(-50%);
+}
+.aPurchases.active ~ .anchor-style {
+    transform: translateX(50%);
+}
+.anchor-style {
+    
+    transition: all 250ms ease;
+}

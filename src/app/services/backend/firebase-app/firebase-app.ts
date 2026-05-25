@@ -7,7 +7,7 @@ import {
     httpsCallable
 } from 'firebase/functions';
 import { getStorage, ref, uploadBytes, getMetadata } from "firebase/storage";
-import { DownloadFiles, Product } from '../../../types';
+import { DownloadFiles, Product, PurchaseData } from '../../../types';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDnYPpoX9IzEQeZM5ZgEbGZ_3KfGmhqKwo",
@@ -45,9 +45,21 @@ export class FirebaseApp {
     }
 
     public async createCheckoutSession(data: any) {
-        const fn = httpsCallable(this.functions, 'createCheckoutSession');
+        try {
+            const fn = httpsCallable(this.functions, 'createCheckoutSession');
+            const result = await fn(data);
+            return result.data;
+        } catch(error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    public async getPurchases(data: any) {
+        const fn = httpsCallable(this.functions, 'getPurchases');
         const result = await fn(data);
-        return result.data;
+        // console.log(result.data);
+        return result.data as PurchaseData;
     }
 
     public async getStatus(data: any) {
