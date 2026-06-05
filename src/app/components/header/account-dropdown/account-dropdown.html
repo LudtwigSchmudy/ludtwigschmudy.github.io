@@ -1,0 +1,120 @@
+@if (user) {
+    <img
+        #headerProfileImage
+        [ngSrc]="user.photoURL" alt="Profile Image"
+        [class]="`
+            size-10.5 rounded-full hover:shadow-white
+            hover:shadow-[0_0_10px] transition-shadow focus:ring-2 focus:ring-blue-600
+            cursor-pointer text-xs flex items-center text-center
+        `"
+        tabindex="0"
+        [priority]="true"
+        width="42"
+        height="42"
+        placeholder="/images/default-profile.png"
+        [placeholderConfig]="{ blur: false }"
+        (click)="openDropdown()"
+        (keypress)="openDropdown($event.key)"
+        (error)="resetImageSrc(headerProfileImage)"
+    />
+}
+@else {
+    <div
+        [class]="`
+            size-10.5 rounded-full cursor-pointer
+            transition-colors hover:text-white
+        `"
+        (click)="openDropdown()"
+    >
+        <mat-icon
+            fontIcon="account_circle"
+            [style]="`
+                font-size: 42px;
+                height: 42px;
+                width: 42px;
+            `"
+        />
+    </div>
+}
+@if (dropdownOpen) {
+    <div
+        class="inset-0 fixed bg-transparent h-screen w-screen z-9"
+        (click)="closeDropdown()"
+    ></div>
+}
+<div
+    [class]="`
+        absolute flex flex-col top-13 right-0 overflow-hidden
+        bg-gray-900 p-3 shadow-lg shadow-black rounded-lg
+        gap-2 z-10 w-40
+    `"
+    [ngClass]="{
+        `opacity-100 scale-100 h-40`: dropdownOpen,
+        `opacity-0 scale-50 h-0`: !dropdownOpen
+    }"
+>
+    @if (user) {
+        <p [class]="`
+            p-2 flex items-center text-white border-b
+            border-gray-400/50 pb-3 text-sm!
+        `">
+            <span class="truncate">{{ user.displayName }}</span>
+        </p>
+        <a  routerLink="/account"
+            routerLinkActive="nav-active"
+            (click)="closeDropdown()"
+            [class]="`
+                p-2 grid grid-cols-[24px_1fr] items-center
+                hover:text-white justify-center gap-2 text-sm!
+                cursor-pointer hover:bg-white/5 rounded-md
+            `"
+            [tabIndex]="dropdownOpen ? 0 : -1"
+        >
+            <mat-icon fontIcon="settings"/>
+            Settings
+        </a>
+        <a  (click)="logout()"
+            [class]="`
+                p-2 grid grid-cols-[24px_1fr] items-center
+                hover:text-white justify-center gap-2 text-sm!
+                cursor-pointer hover:bg-white/5 rounded-md
+            `"
+            [tabIndex]="dropdownOpen ? 0 : -1"
+        >
+            <mat-icon fontIcon="logout"/>
+            Sign Out
+        </a>
+    }
+    @else {
+        <p [class]="`
+            p-2 flex items-center text-white border-b
+            border-gray-400/50 pb-3 text-sm!
+        `">Not logged in</p>
+        <a  routerLink="/login"
+            routerLinkActive="nav-active"
+            (click)="closeDropdown()"
+            [class]="`
+                p-2 grid grid-cols-[24px_1fr] items-center
+                hover:text-white justify-center gap-2 text-sm!
+                cursor-pointer hover:bg-white/5 rounded-md
+            `"
+            [tabIndex]="dropdownOpen ? 0 : -1"
+        >
+            <mat-icon fontIcon="login"/>
+            Login
+        </a>
+        <a  routerLink="/signup"
+            routerLinkActive="nav-active"
+            (click)="closeDropdown()"
+            [class]="`
+                p-2 grid grid-cols-[24px_1fr] items-center
+                hover:text-white justify-center gap-2 text-sm!
+                cursor-pointer hover:bg-white/5 rounded-md
+            `"
+            [tabIndex]="dropdownOpen ? 0 : -1"
+        >
+            <mat-icon fontIcon="person_add"/>
+            Sign Up
+        </a>
+    }
+</div>

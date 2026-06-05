@@ -1,0 +1,17 @@
+<div
+    [class]="`
+        fixed bottom-10 right-10 min-w-60 bg-gray-800 border-2 opacity-100 z-100 flex flex-col
+        justify-center px-4 py-2 shadow-[inset_0_0_8px_2px] rounded-sm transition-all duration-200
+        data-[type=error]:border-red-600 data-[type=error]:shadow-red-800
+        data-[type=info]:border-blue-600 data-[type=info]:shadow-blue-800
+        data-[type=success]:border-green-600 data-[type=success]:shadow-green-800
+        data-[state=closed]:-right-80 data-[state=closed]:opacity-0
+        data-[state=open]:right-10
+        data-[state=closing]:-bottom-10 data-[state=closing]:opacity-0
+    `"
+    [attr.data-state]="state"
+    [attr.data-type]="type"
+>
+    <span class="font-heading text-xs text-gray-400">{{type.toUpperCase()}}</span>
+    {{ message }}
+</div>

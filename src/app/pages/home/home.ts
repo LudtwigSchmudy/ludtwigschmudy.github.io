@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Item, Post, Song } from '../../types';
-import { Songs } from '../../services/songs';
-import { ShopItem } from '../../services/shop-item';
-import { BlogPost } from '../../services/blog';
+import { Songs } from '../../services/music/songs';
+import { ShopItem } from '../../services/backend/shop-item';
 import { DateFormatPipe } from "../../pipes/date-format-pipe";
 import { FullDateFormatPipe } from "../../pipes/full-date-format-pipe";
 import { MatIcon } from "@angular/material/icon";
@@ -31,22 +30,17 @@ export class Home implements OnInit {
     now: number = new Date().getTime();
 
     constructor(private songService: Songs,
-                private shopItemService: ShopItem,
-                private blogService: BlogPost) {
+                private shopItemService: ShopItem) {
         songService.songs$.subscribe(() => {
             this.songs = songService.getLatestSongs(4);
         });
         shopItemService.items$.subscribe(() => {
             this.items = shopItemService.getSomeItems(4);
         });
-        blogService.blogPosts$.subscribe(() => {
-            this.posts = blogService.getLatestPosts(2);
-        });
     }
     ngOnInit(): void {
         this.songService.updateSongs();
         this.shopItemService.updateItems();
-        this.blogService.updatePosts();
     }
 
     openPresave(link: string) {

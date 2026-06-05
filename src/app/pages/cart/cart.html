@@ -1,0 +1,308 @@
+<main>
+    <section class="p-12 max-w-[1200px] mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold text-center pt-3 pb-6">Your Cart</h1>
+
+        <div class="w-full">
+            <h2 [class]="`
+                text-3xl sticky sm:top-28 top-42 py-3 px-4 bg-gray-800 z-10 rounded-lg
+                shadow-lg shadow-[#1a202c] mb-2
+            `">Items</h2>
+            @for (item of cart; track $index) {
+                <div [class]="`
+                    w-95/100 mx-auto p-3 flex items-center justify-between overflow-x-hidden
+                    group hover:bg-gray-900 transition-colors rounded-lg
+                `">
+                    <div>
+                        <span class="text-sm text-gray-400">{{ item.type }}</span>
+                        <h3 class="text-xl">{{ item.title }}</h3>
+                    </div>
+                    <div [class]="`
+                        flex items-center gap-2 mt-2
+                        translate-x-12 group-hover:translate-x-0 transition-transform
+                    `">
+                        <span class="text-xl relative flex gap-0.5">
+                            ${{ item.price }}
+                            <span class="text-sm! h-full inline-flex items-start">00</span>
+                        </span>
+                        <button
+                            [class]="`
+                                flex items-center size-10 rounded-xl text-white justify-center
+                                cursor-pointer transition-colors hover:text-red-600
+                            `"
+                            (click)="openRemovePopup(item)"
+                        >
+                            <mat-icon fontIcon="close" class="scale-75"/>
+                        </button>
+                    </div>
+                </div>
+                @if ($index < cart.length - 1) {
+                    <hr class="border-gray-500 border-dashed my-2 w-95/100 mx-auto"/>
+                }
+            }
+            @empty {
+                <div [class]="`
+                    w-95/100 mx-auto p-3 flex items-center justify-between rounded-lg
+                `">
+                    <div>
+                        <span class="text-sm text-gray-400">Notice</span>
+                        <h3 class="text-xl">There is nothing in your cart</h3>
+                    </div>
+                </div>
+            }
+            <h2 [class]="`
+                text-3xl sticky sm:top-28 top-42 py-3 px-4 bg-gray-800 z-10 rounded-lg
+                shadow-lg shadow-[#1a202c] mb-2 mt-6
+            `">Cost</h2>
+            <div [class]="`
+                px-2 py-3 flex items-center justify-between w-95/100 mx-auto
+            `">
+                <div>
+                    <span class="text-sm text-gray-400"></span>
+                    <h3 class="text-xl">Subtotal</h3>
+                </div>
+                <div [class]="`
+                    flex items-center gap-2 mt-2
+                `">
+                    <span class="text-xl relative flex gap-0.5">
+                        ${{ total }}
+                        <span class="text-sm! h-full inline-flex items-start">00</span>
+                    </span>
+                </div>
+            </div>
+            <hr class="border-gray-500 border-dashed my-2 w-95/100 mx-auto"/>
+            <div [class]="`
+                px-2 py-3 flex items-center justify-between w-95/100 mx-auto
+            `">
+                <div>
+                    <span class="text-sm text-gray-400"></span>
+                    <h3 class="text-xl">Tax</h3>
+                </div>
+                <div [class]="`
+                    flex items-center gap-2
+                `">
+                    <span class="text-md relative flex gap-0.5">
+                        Calculated at checkout
+                    </span>
+                </div>
+            </div>
+
+
+            <div class="flex justify-end items-center gap-3 mt-6 mr-3">
+                <button
+                    [class]="`
+                        px-4 py-3 rounded-lg font-bold border-2 border-red-600 text-red-300
+                        cursor-pointer not-disabled:hover:bg-red-600/40 transition-all duration-200
+                        disabled:opacity-50 disabled:cursor-not-allowed text-lg
+                    `"
+                    (click)="openClearPopup()"
+                    [disabled]="cart.length === 0"
+                >
+                    Clear
+                </button>
+                <button
+                    [class]="`
+                        px-12 py-3 rounded-lg font-bold bg-blue-600
+                        cursor-pointer not-disabled:hover:bg-blue-800 transition-all duration-200
+                        disabled:opacity-50 disabled:cursor-not-allowed text-lg
+                    `"
+                    (click)="openCheckoutPopup()"
+                    [disabled]="cart.length === 0"
+                >
+                    Checkout
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div
+    class="fixed inset-0 z-100 flex items-center justify-center"
+    [ngClass]="{ 'pointer-events-none': !isDownloading }"
+>
+    <div
+        class="absolute inset-0 transition-all"
+        [ngClass]="{
+            'pointer-events-none bg-transparent backdrop-blur-none': !isDownloading,
+            'pointer-events-normal bg-gray-500/20 backdrop-blur-xs': isDownloading
+        }"
+    ></div>
+    <div
+        [class]="`
+            bg-gray-800 rounded-xl z-10 text-center pb-6 p-9 w-9/10 sm:w-min flex 
+            flex-col transition-all duration-200 shadow-[0_3px_6px_black] min-w-100
+        `"
+        [ngClass]="{
+            'scale-0 pointer-events-none translate-y-20 opacity-0': !isDownloading,
+            'scale-100 translate-y-0 opacity-100': isDownloading
+        }"
+    >
+        <h3 class="text-2xl mb-5">
+            @switch (step) {
+                @default { Finalizing... }
+                @case ('download') { Downloading... }
+                @case ('zip') { Zipping... }
+                @case ('done') { Saving... }
+            }
+        </h3>
+        <div [class]="`
+            w-full max-w-100 rounded-full bg-gray-900 h-5 overflow-hidden ring-2
+            ring-gray-900
+        `">
+            <div
+                class="w-0 h-5 rounded-full bg-blue-800 transition-all duration-200"
+                [ngClass]="{
+                    'w-1/3': step === 'download',
+                    'w-2/3': step === 'zip',
+                    'w-3/3': step === 'done'
+                }"
+            ></div>
+        </div>
+    </div>
+</div>
+
+<div
+    class="fixed inset-0 z-100 flex items-center justify-center"
+    [ngClass]="{ 'pointer-events-none': !showPopup }"
+>
+    <div
+        class="absolute inset-0 transition-all"
+        [ngClass]="{
+            'pointer-events-none bg-transparent backdrop-blur-none': !showPopup,
+            'pointer-events-normal bg-gray-500/20 backdrop-blur-xs': showPopup
+        }"
+        (click)="closePopup()"
+    ></div>
+    <div
+        [class]="`
+            bg-gray-800 rounded-xl z-10 text-center pb-6 p-9 w-9/10 sm:w-min flex 
+            flex-col transition-all duration-200 shadow-[0_3px_6px_black]
+        `"
+        [ngClass]="{
+            'scale-0 pointer-events-none translate-y-20 opacity-0': !showPopup,
+            'scale-100 translate-y-0 opacity-100': showPopup
+        }"
+    >
+        @switch (popupState) {
+            @case ("remove") {
+                <h2 class="text-4xl mb-5">Confirm Remove</h2>
+                <p class="text-lg text-gray-400 mb-2">
+                    Are you sure you would like to remove the {{removingProduct?.type?.toLowerCase()}},
+                    <b class="text-white">{{ removingProduct?.title }}</b>, from your cart?
+                </p>
+                <p class="text-lg text-gray-400 mb-6">
+                    This will remove <b class="text-white">${{ removingProduct?.price }}</b> from your cart.
+                </p>
+                <div class="flex flex-wrap-reverse sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
+                    <button
+                        [class]="`
+                            px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                            cursor-pointer hover:bg-blue-700 transition-all
+                        `"
+                        (click)="closePopup()"
+                    >
+                        Keep
+                    </button>
+                    <button
+                        [class]="`
+                            px-12 py-3 rounded-lg font-bold bg-red-600 text-lg
+                            cursor-pointer hover:bg-red-700 transition-all
+                        `"
+                        (click)="confirmRemove()"
+                    >
+                        Remove
+                    </button>
+                </div>
+            }
+
+            @case ("clear") {
+                <h2 class="text-4xl mb-5">Confirm Clear Cart</h2>
+                <p class="text-lg text-gray-400 mb-6">
+                    Are you sure you would like to remove all items from your cart?
+                    This cannot be undone.
+                </p>
+                <div class="flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
+                    <button
+                        [class]="`
+                            px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                            cursor-pointer hover:bg-blue-700 transition-all
+                        `"
+                        (click)="closePopup()"
+                    >
+                        Keep
+                    </button>
+                    <button
+                        [class]="`
+                            px-12 py-3 rounded-lg font-bold bg-red-600 text-lg
+                            cursor-pointer hover:bg-red-700 transition-all
+                        `"
+                        (click)="confirmClear()"
+                    >
+                        Clear
+                    </button>
+                </div>
+            }
+
+            @case ("checkout") {
+                <h2 class="text-4xl mb-5">Confirm Checkout</h2>
+                <p class="text-lg text-gray-400 mb-6">
+                    Are you ready to checkout? This will take you to our payment processor,
+                    once you finish you will be brought back here.
+                </p>
+                <div class="flex flex-wrap-reverse sm:flex-nowrap justify-center sm:justify-between items-center gap-3 sm:gap-12 mt-3">
+                    <button
+                        [class]="`
+                            px-12 py-3 rounded-lg font-bold bg-gray-600 text-lg
+                            cursor-pointer hover:bg-gray-700 transition-all
+                        `"
+                        (click)="closePopup()"
+                    >
+                        Back
+                    </button>
+                    @if (isCheckingOut) {
+                        <button
+                            [class]="`
+                                px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                                cursor-not-allowed opacity-50 flex items-center gap-2
+                            `"
+                            disabled
+                        >
+                            <mat-icon fontIcon="donut_large" class="loading"/>
+                            Loading
+                        </button>
+                    } @else {
+                        <button
+                            [class]="`
+                                px-12 py-3 rounded-lg font-bold bg-blue-600 text-lg
+                                cursor-pointer hover:bg-blue-800 transition-all
+                            `"
+                            (click)="confirmCheckout()"
+                        >
+                            Checkout
+                        </button>
+                    }
+                </div>
+            }
+
+            @case ("error") {
+                <h2 class="text-4xl mb-5">Checkout Error</h2>
+                <p class="text-lg text-gray-400 mb-3 min-w-100">
+                    Unfortunately, our system only allows ~12 items at a time.
+                    If you have many individual tracks, please reduce the number per purchase,
+                    or switch to buying an album of the tracks you wanted.
+                </p>
+                <p class="text-lg text-gray-400 mb-6">
+                    We apologize for the inconvenience.
+                </p>
+                <button
+                    [class]="`
+                        px-12 py-3 rounded-lg font-bold bg-gray-600 text-lg mx-auto
+                        cursor-pointer hover:bg-gray-700 transition-all max-w-70 w-full
+                    `"
+                    (click)="closePopup()"
+                >
+                    Back
+                </button>
+            }
+        }
+    </div>
+</div>

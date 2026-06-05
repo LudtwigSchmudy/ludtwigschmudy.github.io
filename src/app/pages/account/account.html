@@ -1,0 +1,36 @@
+<main class="mt-28 inset-0">
+    <div class="flex items-center justify-center w-full py-4 relative">
+        <a  routerLink="/account/settings"
+            routerLinkActive="active"
+            class="`
+                aSettings
+                p-3 hover:bg-white/20 transition-colors duration-150
+                w-50 h-14 text-center flex items-center justify-center
+            `"
+        >
+            Account Settings
+        </a>
+        <a  routerLink="/account/purchases"
+            routerLinkActive="active"
+            class="`
+                aPurchases
+                p-3 hover:bg-white/20 transition-colors duration-150
+                w-50 h-14 text-center flex items-center justify-center
+            `"
+        >
+            Purchase History
+        </a>
+        <span class="anchor-style border-b-3 border-white absolute -z-1 w-50 h-14"></span>
+    </div>
+
+    <div class="w-full">
+        <router-outlet class="w-full" [routerOutletData]="{
+            'limit': limit,
+            'status': status,
+            'purchases': purchases,
+            'loaded': loaded,
+            'userData': userData,
+            'userLoaded': userLoaded
+        }"/>
+    </div>
+</main>

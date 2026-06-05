@@ -32,3 +32,112 @@ export type Platform = {
     "url": string;
     "image": string;
 }
+export type User = {
+    "displayName": string;
+    "email": string;
+    "emailVerified"?: boolean;
+    "metadata"?: {
+        "createdAt": string;
+        "creationTime": string;
+        "lastLoginAt": string;
+        "lastSignInTime": string;
+    };
+    "createdAt"?: Date;
+    "photoURL": string;
+    "accountType"?: string;
+}
+
+
+
+
+export type Product = {
+    "id": string;
+    "title": string;
+    "description"?: string;
+    "imageURL": string;
+    "active": boolean;
+    "price": number;
+    "type": "Album" | "Track";
+    "songAmount"?: number;
+    "album"?: string;
+    "priceId"?: string;
+    "audioLink"?: string;
+}
+
+export type DisplayTrack = {
+    "imageURL": string;
+    "album": string;
+    "songAmount": number;
+    "songs": {
+        "index": number;
+        "id"?: string;
+        "uid"?: string;
+        "title": string;
+        "description"?: string;
+        "price": number;
+    }[];
+}
+
+export type CartItem = {
+    "productId": string;
+    "name": string;
+    "price": number;
+    "quantity": number;
+}
+
+export type Price = {
+    "albumTitle"?: string;
+    "productId": string;
+    "priceId": string;
+    "type": "Album" | "Track";
+}
+
+export type StripeItem = {
+    "type"?: "Album" | "Track";
+    "price": string;
+    "quantity": number;
+    "fbId"?: string;
+}
+
+export type CloudCart = {
+    "cartData": string;
+    "createdAt": string;
+    "updatedAt"?: string;
+}
+
+export type FileData = {
+    "name": string;
+    "path": string;
+}
+
+export type DownloadFiles = {
+    "type": "Album" | "Track";
+    "data": FileData[];
+}
+
+export type Toast = {
+    "message": string,
+    "type": "error" | "success" | "info";
+    "state": "open" | "closing" | "closed";
+}
+
+export type Purchase = {
+    "id": string,
+    "total": number,
+    "metadata": {
+        "fbId": string,
+        "items": {
+            "title": string,
+            "type": "Album" | "Track",
+            "album"?: string
+        }[]
+    },
+    "createdAt": Date
+}
+
+export type PurchaseData = {
+    "data": Purchase[],
+    "has_more": boolean
+}
+
+export type SessionStatus = "complete" | "open" | "expired";

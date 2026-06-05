@@ -1,0 +1,511 @@
+<section class="container mt-43 sm:mt-28 p-6 max-[850px]:hidden">
+    <h1 class="text-4xl sm:text-5xl font-bold text-center pt-3 mb-6">Management</h1>
+
+    <div class="flex flex-col gap-3 w-full">
+        <div [class]="`
+            w-full p-3 rounded-lg border border-gray-700 bg-gray-800/60 backdrop-blur-xs z-49
+            flex justify-between gap-6 items-center mb-3 sticky top-44 sm:top-29 shadow-md shadow-black
+        `">
+            <h2 class="text-xl font-heading text-left">Shop Products</h2>
+
+            <div class="flex gap-3">
+                <select
+                    [class]="`
+                        px-3 py-1 outline-none ring-1 ring-transparent focus:ring-2
+                        focus:ring-blue-600 transition-all duration-200
+                    `"
+                    #typeFilter
+                    (change)="handleTypeChange(typeFilter.value)"
+                >
+                    <option value="">All Types</option>
+                    <option value="Track">Track</option>
+                    <option value="Album">Album</option>
+                </select>
+                <select
+                    [class]="`
+                        px-3 py-1 outline-none ring-1 ring-transparent focus:ring-2
+                        focus:ring-blue-600 transition-all duration-200
+                    `"
+                    #active
+                    (change)="handleActiveChange(active.value)"
+                >
+                    <option value="">Both</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3 w-full relative min-h-50">
+            @for (item of products; track $index) {
+                <div [class]="`
+                    mx-auto w-19/20 grid grid-cols-[60px_auto_265px] items-center justify-stretch gap-4
+                `">
+                    <img
+                        [src]="item.imageURL"
+                        [alt]="`Image for ${item.title}`"
+                        class="size-15 rounded-md"
+                    >
+                    <div class="flex flex-col w-full">
+                        <span class="text-sm flex gap-1">
+                            <span class="text-white">${{ item.price }}</span> •
+                            <span class="text-gray-400 text-sm">
+                                {{ item.type }}
+                                @if (item.album) {
+                                    from
+                                    <span class="italic">{{ item.album }}</span>
+                                }
+                            </span>
+                        </span>
+                        <h3 class="text-lg truncate w-full">
+                            @if (!item.active) {
+                                <span class="italic text-gray-400">(Inactive)</span>
+                            }
+                            {{ item.title }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-4 w-full shrink-0 items-center">
+                        <button
+                            [class]="`
+                                px-3 py-1 pl-2 rounded-md flex gap-0.5 text-sm items-center ml-auto
+                                justify-self-end ring ring-gray-600 hover:ring-green-600 cursor-pointer
+                                hover:border-green-600 transition-all hover:ring-2 hover:text-green-600
+                            `"
+                            (click)="openLinkPopup(item)"
+                        >
+                            @if (!item.priceId || !item.audioLink) {
+                                <mat-icon class="text-base!" fontIcon="add_link"/>
+                            } @else {
+                                <mat-icon class="text-base!" fontIcon="link"/>
+                            }
+                            Link
+                        </button>
+                        <button
+                            [class]="`
+                                px-3 py-1 pl-2 rounded-md flex gap-0.5 text-sm items-center ring
+                                justify-self-end ring-gray-600 hover:ring-blue-600 hover:border-blue-600
+                                transition-all hover:ring-2 hover:text-blue-600 cursor-pointer
+                            `"
+                            (click)="openEditForm(item)"
+                        >
+                            <mat-icon class="text-base!" fontIcon="edit"/>
+                            Edit
+                        </button>
+                        <button
+                            [class]="`
+                                px-3 py-1 pl-2 rounded-md flex gap-0.5 text-sm items-center ring
+                                justify-self-end ring-gray-600 hover:ring-red-600 hover:border-red-600
+                                transition-all hover:ring-2 hover:text-red-600 cursor-pointer
+                            `"
+                            (click)="openDeletePopup(item)"
+                        >
+                            <mat-icon class="text-base!" fontIcon="delete"/>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                @if ($index < products.length - 1) {
+                    <hr class="border-gray-500 border-dashed my-2 w-29/30 mx-auto"/>
+                }
+            }
+            @if (isLoading) {
+                <div class="absolute inset-0 flex items-center justify-center p-12">
+                    <div [class]="`
+                        absolute inset-0
+                    `"></div>
+                    <h3 class="flex items-center gap-2">
+                        <mat-icon fontIcon="donut_large" class="loading"/>
+                        Loading
+                    </h3>
+                </div>
+            }
+        </div>
+        <button
+            [class]="`
+                fixed bottom-10 right-10 bg-gray-800/60 ring-2 ring-gray-600 rounded-full
+                shadow-lg shadow-black size-12 flex items-center justify-center cursor-pointer
+                hover:shadow-xl hover:scale-110 transition-all backdrop-blur-xs hover:ring-4
+            `"
+            (click)="openEditForm(null)"
+        >
+            <mat-icon fontIcon="add" class=""/>
+        </button>
+    </div>
+
+    @if (showForm) {
+        <div class="fixed inset-0 bg-gray-900/30 backdrop-blur-xs z-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center z-51 popup-modal" #editModal>
+            <form
+                [class]="`
+                    flex relative rounded-3xl p-6 bg-gray-800 border border-gray-700 gap-6
+                    shadow-[0_0_20px_-3px_black] w-2/3 max-w-180
+                `"
+                (ngSubmit)="handleFormSubmit(editModal)"
+                [formGroup]="shopItemForm"
+            >
+                <div class="flex flex-col gap-1">
+                    <img
+                        [src]="imagePath.value"
+                        alt="Product image"
+                        [class]="`
+                            min-w-62 max-w-62 aspect-square border-2 border-gray-600
+                            flex items-center justify-center mb-1 rounded-lg
+                        `"
+                    />
+                    <div class="font-heading flex items-center gap-2 w-full text-lg py-3 px-2">
+                        Item Price: <span class="font-heading text-2xl">${{ calculatePrice() }}</span>
+                    </div>
+                    <label
+                        for="item-active"
+                        [class]="`font-heading 
+                            flex gap-2 items-center w-full text-lg border-none! hover:bg-gray-700
+                            rounded-md px-2
+                        `"
+                    >
+                        <input
+                            class="size-5 text-[1rem]!"
+                            type="checkbox"
+                            formControlName="active"
+                            id="item-active"
+                        />
+                        Item active?
+                    </label>
+                </div>
+                <div [class]="`
+                    flex flex-col gap-4 items-center w-full max-w-110
+                `">
+                    <label
+                        for="item-title"
+                        class="font-heading flex flex-col gap-2 w-full text-lg"
+                    >
+                        Item Title
+                        <input
+                            class="border-2! font-base h-12 text-[1rem]!"
+                            type="text"
+                            formControlName="title"
+                            id="item-title"
+                        />
+                    </label>
+            
+                    <!-- <label
+                        for="item-desc"
+                        class="font-heading flex flex-col gap-2 w-full text-lg"
+                    >
+                        Item Description
+                        <textarea
+                            class="border-2! font-base"
+                            formControlName="description"
+                            id="item-desc"
+                            rows="2"
+                        ></textarea>
+                    </label> -->
+            
+                    <label
+                        for="item-image"
+                        class="font-heading flex flex-col gap-2 w-full text-lg"
+                    >
+                        Item Image
+                        <input
+                            class="border-2! font-base h-12 text-[1rem]!"
+                            type="text"
+                            formControlName="imageURL"
+                            id="item-image"
+                            #imagePath
+                        />
+                    </label>
+                
+                    <input
+                        class="border-2! font-base h-12"
+                        type="hidden"
+                        formControlName="price"
+                        id="item-price"
+                        [value]="calculatePrice()"
+                        readonly
+                    />
+                
+                    <label
+                        for="item-select"
+                        class="font-heading flex flex-col gap-2 w-full text-lg"
+                    >
+                        Item Type
+                        <select
+                            class="border-2! font-base h-12 text-[1rem]!"
+                            formControlName="type"
+                            id="item-select"
+                            #itemType
+                        >
+                            <option
+                                value=""
+                                [selected]="!selectedItem"
+                                disabled
+                            >
+                                Select Type
+                            </option>
+                            <option
+                                value="Track"
+                                [selected]="selectedItem?.type === 'Track'"
+                            >
+                                Track
+                            </option>
+                            <option
+                                value="Album"
+                                [selected]="selectedItem?.type === 'Album'"
+                            >
+                                Album
+                            </option>
+                        </select>
+                    </label>
+                
+                    @if (itemType.value === "Album") {
+                        <label
+                            for="item-num"
+                            class="font-heading flex flex-col gap-2 w-full text-lg"
+                        >
+                            Number of Songs
+                            <input
+                                class="border-2! font-base h-12 text-[1rem]!"
+                                type="number"
+                                formControlName="songAmount"
+                                min="3" max="40"
+                                id="item-num"
+                                #songCount
+                            />
+                        </label>
+                    }
+                    @else {
+                        <label
+                            for="item-album"
+                            class="font-heading flex flex-col gap-2 w-full text-lg"
+                        >
+                            Album Name
+                            <input
+                                class="border-2! font-base h-12 text-[1rem]!"
+                                type="text"
+                                formControlName="album"
+                                id="item-album"
+                            />
+                        </label>
+                    }
+                
+            
+                    <div class="flex justify-between items-center w-full gap-4 mt-2">
+                        <button
+                            [class]="`
+                                bg-gray-600 hover:bg-gray-700 transition-colors rounded-lg
+                                cursor-pointer py-2 px-12 font-heading duration-200
+                            `"
+                            type="button"
+                            (click)="closeForm(editModal)"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            [class]="`
+                                bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg gap-2
+                                cursor-pointer py-2 px-12 font-heading duration-200 flex items-center
+                            `"
+                        >
+                            @if (editLoading) {
+                                <mat-icon class="loading" fontIcon="donut_large"/>
+                                {{ selectedItem ? 'Updating...' : 'Creating...' }}
+                            }
+                            @else {
+                                {{ selectedItem ? 'Edit Item' : 'Create Item' }}
+                            }
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+    @else if (showLinkPopup) {
+        <div class="fixed inset-0 bg-gray-900/30 backdrop-blur-xs z-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center z-51 popup-modal" #linkModal>
+            <div
+                [class]="`
+                    grid grid-cols-[248px_1fr] relative rounded-3xl p-6 bg-gray-800 border border-gray-700
+                    gap-x-6 gap-y-3 shadow-[0_0_20px_-3px_black] w-2/3 max-w-200 items-center
+                `"
+            >
+                <img
+                    [src]="selectedItem?.imageURL"
+                    alt="Product image"
+                    [class]="`
+                        w-62 aspect-square border-2 border-gray-600 flex items-center
+                        justify-center rounded-lg row-span-4 self-start
+                    `"
+                />
+                <h3 class="text-left text-2xl h-min truncate">
+                    <span class="text-gray-400">{{ selectedItem?.type }}:</span>
+                    {{ selectedItem?.title }}
+                </h3>
+
+                <!-- mp3 Link -->
+                <label
+                    [class]="`
+                        flex ring ring-gray-600 bg-gray-900/20 rounded-lg min-h-10 py-3 px-4 select-none
+                        transition-all hover:bg-gray-900/70 items-center hover:ring-3 cursor-pointer gap-2
+                        relative overflow-hidden
+                    `"
+                    [title]="
+                        songInput.files && songInput.files.length > 0 ? fileStyle(songInput.files) :
+                        selectedItem && selectedItem.audioLink ?
+                        selectedItem.audioLink.split(',').join('\n') : ''
+                    "
+                    tabindex="0"
+                >
+                    <span class="font-heading text-lg pointer-events-none">
+                        Audio track{{ selectedItem?.type === "Album" ? 's' : '' }}:
+                    </span>
+                    <span class="text-gray-400 text-sm pointer-events-none truncate">
+                        @if (songInput.files && songInput.files.length > 0) {
+                            {{
+                                songInput.files[0] &&
+                                (
+                                    convertName(songInput.files[0].name) + (
+                                        songInput.files.length > 1 ?
+                                        ` +${songInput.files.length - 1}` :
+                                        ''
+                                    )
+                                )
+                            }}
+                        }
+                        @else if (selectedItem && selectedItem.audioLink) {
+                            {{
+                                selectedItem.audioLink.split(',')[0] + (
+                                    selectedItem.audioLink.split(',').length > 1 ?
+                                    ` +${selectedItem.audioLink.split(',').length - 1}` :
+                                    ''
+                                )
+                            }}
+                        }
+                        @else {
+                            Click to upload
+                        }
+                    </span>
+                    <input
+                        type="file"
+                        accept="audio/mp3, audio/wav"
+                        class="fixed opacity-0 pointer-events-none"
+                        [multiple]="selectedItem?.type === 'Album'"
+                        (change)="handleFileUpload(songInput)"
+                        #songInput
+                        tabindex="-1"
+                    />
+                    <div [class]="`
+                        absolute top-0 right-0 bottom-0 h-full aspect-square bg-gray-900/40
+                        backdrop-blur-xs flex items-center justify-center
+                    `">
+                        @if (fileUploading) {
+                            <mat-icon fontIcon="donut_large" class="loading"/>
+                        }
+                        @else if (selectedItem?.audioLink || (songInput.files && songInput.files.length > 0)) {
+                            <mat-icon fontIcon="check_circle"/>
+                        }
+                        @else {
+                            <mat-icon fontIcon="upload"/>
+                        }
+                    </div>
+                </label>
+
+                <!-- Price Link -->
+                <label
+                    [class]="`
+                        flex ring ring-gray-600 bg-gray-900/20 rounded-lg min-h-10 py-3 px-4 select-none
+                        transition-all hover:bg-gray-900/70 items-center hover:ring-3 cursor-text gap-1
+                        has-[:focus]:ring-3 has-[:focus]:ring-blue-600
+                    `"
+                    tabindex="0"
+                >
+                    <span class="font-heading text-lg pointer-events-none">PriceId:</span>
+                    <input
+                        type="text"
+                        [class]="`
+                            bg-none! border-x-transparent! border-t-transparent! rounded-none!
+                            bg-transparent! focus:ring-0! w-full text-sm px-1 text-gray-400!
+                        `"
+                        [value]="selectedItem?.priceId"
+                        readonly
+                    />
+                </label>
+
+                <div class="flex gap-3 justify-self-end mt-3">
+                    <button
+                        [class]="`
+                            bg-gray-600 hover:bg-gray-700 transition-colors rounded-lg justify-self-end
+                            cursor-pointer py-2 px-12 font-heading duration-200
+                        `"
+                        (click)="closeLinkPopup(linkModal)"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    @else if (showDeletePopup) {
+        <div class="fixed inset-0 bg-gray-900/30 backdrop-blur-xs z-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center z-51 popup-modal" #deleteModal>
+            <div
+                [class]="`
+                    grid grid-cols-[248px_1fr] relative rounded-3xl p-6 bg-gray-800 border border-gray-700
+                    gap-x-6 shadow-[0_0_20px_-3px_black] w-2/3 max-w-200 grid-rows-5
+                `"
+            >
+                <img
+                    [src]="selectedItem?.imageURL"
+                    alt="Product image"
+                    [class]="`
+                        w-62 aspect-square border-2 border-gray-600 flex items-center
+                        justify-center mb-1 rounded-lg row-span-5 col-start-1
+                    `"
+                />
+                <h3 class="text-left text-2xl col-start-2">{{ selectedItem?.title }}</h3>
+                <p class="text-left text-lg col-start-2">
+                    Type: {{ selectedItem?.type }}
+                    @if (selectedItem?.type === "Album") {
+                        ({{ selectedItem?.songAmount }})
+                    }
+                </p>
+                <p class="text-left text-lg col-start-2">Price: ${{ selectedItem?.price }}</p>
+                <p class="text-left text-lg col-start-2">Active: {{ selectedItem?.active ? "Yes" : "No" }}</p>
+                
+
+                <div class="flex justify-end items-center w-full gap-4 mt-2 row-start-5 col-start-2">
+                    <button
+                        [class]="`
+                            bg-gray-600 hover:bg-gray-700 transition-colors rounded-lg
+                            cursor-pointer py-2 px-12 font-heading duration-200
+                        `"
+                        (click)="closeDeletePopup(deleteModal)"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        [class]="`
+                            bg-red-600 hover:bg-red-700 transition-colors rounded-lg gap-2
+                            cursor-pointer py-2 px-12 font-heading duration-200 flex items-center
+                        `"
+                        (click)="confirmDelete(deleteModal)"
+                    >
+                        @if (deleteLoading) {
+                            <mat-icon class="loading" fontIcon="donut_large"/>
+                            Deleting
+                        }
+                        @else {
+                            Delete
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+<div class="fixed hidden max-[850px]:flex flex-col items-center justify-center inset-0 z-100 bg-black gap-3">
+    <h2 class="text-4xl text-white">Non-mobile Page</h2>
+    <p class="text-lg text-gray-400 text-center w-3/4">
+        This page is meant only for use on a larger screen. Either switch your view, or head to the
+        <a routerLink="/" class="text-blue-400 hover:text-blue-700">homepage</a>. Thank you for understanding.
+    </p>
+</div>
