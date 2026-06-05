@@ -45,7 +45,12 @@ export class ShopService {
         });
     }
 
+    private reloadUser() {
+        this.user = this.accountService.getUser()
+    }
+
     async createCheckout() {
+        this.reloadUser();
         if (!this.user) return;
         return await this.appService.createCheckoutSession({ cartData: JSON.stringify(this.cartSubject.getValue()) });
     }
@@ -61,16 +66,19 @@ export class ShopService {
     }
 
     async purchaseDownloads(): Promise<DownloadFiles[] | null> {
+        this.reloadUser();
         if (!this.user) return null;
         return await this.appService.getPurchaseDownloads();
     }
 
     async savePurchases(sessionId: string) {
+        this.reloadUser();
         if (!this.user) throw new Error("You must be logged in!");
         return await this.appService.savePurchases({ sessionId })
     }
 
     private async getUserCart(): Promise<CloudCart | null> {
+        this.reloadUser();
         if (!this.user) {
             return null;
         }
@@ -89,6 +97,7 @@ export class ShopService {
     }
 
     private async saveCart(): Promise<void> {
+        this.reloadUser();
         if (!this.user) {
             // toast notification saying they need to login
             this.toastService.newToast( "error", "To use the shop, you need to login");
@@ -300,6 +309,7 @@ export class ShopService {
 
     /* Get user's purchase history */
     async getPurchaseHistory(limit?: number, start?: number, status?: SessionStatus): Promise<PurchaseData> {
+        this.reloadUser();
         if (!this.user) {
             console.error('User must be logged in');
             return {

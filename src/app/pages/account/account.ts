@@ -18,6 +18,34 @@ export class Account {
     public userData: User | null = null;
     public userLoaded: boolean = false;
 
+    private LoadPurchases() {
+        this.shopService
+            .getPurchaseHistory()
+            .then(_purchases => {
+                this.purchases = _purchases.data;
+                
+                if (this.purchases.length > 0) {
+                    this.purchases = this.purchases.map(p => {
+                        const { createdAt, ...rest } = p;
+                        return { ...rest, createdAt: new Date(createdAt) }
+                    })
+                }
+
+                this.loaded = true;
+            })
+            .catch(error => {
+                console.error(error);
+                this.purchases = [];
+                this.loaded = true;
+            })
+    }
+
+    public LoadPurchaseHistory() {
+        if (this.purchases.length === 0) {
+            this.LoadPurchases();
+        }
+    }
+
     constructor(
         private readonly shopService: ShopService,
         private readonly accountService: AccountService
@@ -26,25 +54,7 @@ export class Account {
             this.userData = this.accountService.getUser();
             this.userLoaded = true;
 
-            this.shopService
-                .getPurchaseHistory()
-                .then(_purchases => {
-                    this.purchases = _purchases.data;
-                    
-                    if (this.purchases.length > 0) {
-                        this.purchases = this.purchases.map(p => {
-                            const { createdAt, ...rest } = p;
-                            return { ...rest, createdAt: new Date(createdAt) }
-                        })
-                    }
-
-                    this.loaded = true;
-                })
-                .catch(error => {
-                    console.error(error);
-                    this.purchases = [];
-                    this.loaded = true;
-                })
+            this.LoadPurchases();
         }, 1000)
     }
 }
