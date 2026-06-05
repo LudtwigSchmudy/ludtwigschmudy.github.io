@@ -36,12 +36,6 @@ export class Login {
         })
     }
 
-    logErrors() {
-        console.log(this.loginForm.errors)
-        console.log(this.loginForm.get("email")?.errors);
-        console.log(this.loginForm.get("password")?.errors);
-    }
-
     async handleLogin(e: Event) {
         e.preventDefault();
         this.isLoading = true;

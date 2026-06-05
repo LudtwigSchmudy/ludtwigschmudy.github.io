@@ -131,10 +131,7 @@ export class Management {
                 action: 'delete'
             })
             .then(result => {
-                console.log(result);
                 this.products = this.products.filter(itm => {
-                    console.log('Item\'s id:', itm.id);
-                    console.log('Resulting id:', result.replaceAll('"', ''));
                     return itm.id != result.replaceAll('"', '')
                 });
                 this.deleteLoading = false;
@@ -174,11 +171,11 @@ export class Management {
                     this.selectedItem?.title
                 )
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     this.fileUploading = false;
                 })
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                     this.fileUploading = false;
                 })
         } else {
@@ -190,11 +187,11 @@ export class Management {
                     this.selectedItem?.title) || ""
                 )
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     this.fileUploading = false;
                 })
                 .catch(err => {
-                    console.log(err);
+                    // console.log(err);
                     this.fileUploading = false;
                 })
         }
@@ -204,7 +201,7 @@ export class Management {
         if (this.shopItemForm.invalid) return;
         this.editLoading = true;
         this.shopItemForm.patchValue({ price: this.calculatePrice() })
-        console.log(this.shopItemForm.value);
+        // console.log(this.shopItemForm.value);
         const fVal = this.shopItemForm.value;
         if (fVal.type === "Track") {
             delete fVal.songAmount;
@@ -225,7 +222,7 @@ export class Management {
                 .then(result => {
                     if (result) {
                         const r = JSON.parse(result);
-                        console.log(r);
+                        // console.log(r);
                         this.products = this.products.map(itm => {
                             if (itm.id === r.id) {
                                 return r;
@@ -252,7 +249,7 @@ export class Management {
                 .then(result => {
                     if (result) {
                         const r = JSON.parse(result);
-                        console.log(r);
+                        // console.log(r);
                         this.products.splice(
                             this.products.findIndex(itm => {
                                 return itm.active === r.active &&
@@ -290,7 +287,7 @@ export class Management {
             ) : undefined
         });
         this.products = newItems;
-        console.log(newItems);
+        // console.log(newItems);
         this.isLoading = false;
     }
 }

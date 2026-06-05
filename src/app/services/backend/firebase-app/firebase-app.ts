@@ -50,7 +50,7 @@ export class FirebaseApp {
             const result = await fn(data);
             return result.data;
         } catch(error) {
-            console.log(error);
+            console.error(error);
             return null;
         }
     }
@@ -58,7 +58,7 @@ export class FirebaseApp {
     public async getPurchases(data: any) {
         const fn = httpsCallable(this.functions, 'getPurchases');
         const result = await fn(data);
-        console.log(result.data);
+        // console.log(result.data);
         return result.data as PurchaseData;
     }
 

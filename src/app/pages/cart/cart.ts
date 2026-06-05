@@ -94,7 +94,6 @@ export class Cart {
                     clearInterval(checkInterval);
                     
                     const status = (await this.shopService.getCheckoutStatus(session.id) as any).status;
-                    console.log('Checkout status:', status);
 
                     this.isCheckingOut = false;
                     this.showPopup = false;

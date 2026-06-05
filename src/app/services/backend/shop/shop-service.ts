@@ -190,7 +190,7 @@ export class ShopService {
             if (!docSnap.exists()) return null;
 
             const productData = docSnap.data();
-            console.log(productData);
+            // console.log(productData);
 
             return productData as Product;
         } catch (error) {

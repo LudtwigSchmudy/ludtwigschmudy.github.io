@@ -44,14 +44,12 @@
             type="email"
             placeholder="Email"
             formControlName="email"
-            (change)="logErrors()"
         />
         <input
             class="w-full mt-1 border-2!"
             type="password"
             placeholder="Password"
             formControlName="password"
-            (change)="logErrors()"
         />
         
         @if (errorMessage && errorMessage.length > 0) {

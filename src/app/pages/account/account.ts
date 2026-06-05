@@ -29,7 +29,6 @@ export class Account {
             this.shopService
                 .getPurchaseHistory()
                 .then(_purchases => {
-                    console.log(_purchases);
                     this.purchases = _purchases.data;
                     
                     if (this.purchases.length > 0) {
@@ -42,7 +41,7 @@ export class Account {
                     this.loaded = true;
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.error(error);
                     this.purchases = [];
                     this.loaded = true;
                 })
