@@ -35,11 +35,13 @@ export class ShopService {
 
         this.accountService.user.subscribe((user) => {
             this.user = user;
-            this.getUserCart()
-                .then((cartResult: CloudCart | null) => {
-                    if (cartResult === null) return;
-                    this.cartSubject.next(JSON.parse(cartResult.cartData));
-                });
+            if (['/shop', '/shop/cart'].includes(this.router.url)) {
+                this.getUserCart()
+                    .then((cartResult: CloudCart | null) => {
+                        if (cartResult === null) return;
+                        this.cartSubject.next(JSON.parse(cartResult.cartData));
+                    });
+            }
         });
     }
 
@@ -70,7 +72,6 @@ export class ShopService {
 
     private async getUserCart(): Promise<CloudCart | null> {
         if (!this.user) {
-            this.toastService.newToast("info", "Please login to access your cart");
             return null;
         }
         const userId = this.user.uid;
@@ -242,11 +243,8 @@ export class ShopService {
                 const album = this.productsLocal.Album.find(itm => itm.title === item.album)
 
                 if (album && allTracksInCart.length === album.songAmount) {
-                    console.log(album)
-                    console.log(allTracksInCart)
-                    // remove all album tracks
                     current = current.filter(itm => !(itm.type === "Track" && itm.album === item.album));
-                    console.log([...current, album])
+                    this.toastService.newToast("info", `All tracks of ${item.album} in cart. Switching to album`);
                     this.cartSubject.next([...current, album])
                 } else {
                     this.toastService.newToast("info", `${item.type}: ${item.title} added to cart`);

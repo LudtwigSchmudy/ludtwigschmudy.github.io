@@ -35,13 +35,16 @@ export type Platform = {
 export type User = {
     "displayName": string;
     "email": string;
-    "metadata": {
+    "emailVerified"?: boolean;
+    "metadata"?: {
         "createdAt": string;
         "creationTime": string;
         "lastLoginAt": string;
         "lastSignInTime": string;
     };
+    "createdAt"?: Date;
     "photoURL": string;
+    "accountType"?: string;
 }
 
 
@@ -128,7 +131,8 @@ export type Purchase = {
             "type": "Album" | "Track",
             "album"?: string
         }[]
-    }
+    },
+    "createdAt": Date
 }
 
 export type PurchaseData = {

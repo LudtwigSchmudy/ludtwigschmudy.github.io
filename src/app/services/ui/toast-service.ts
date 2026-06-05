@@ -37,7 +37,10 @@ export class ToastService {
             current.shift();
             if (current.length > 0) {
                 current[0].state = "open";
-                setTimeout(() => { this.closeToast(); }, 2500);
+                setTimeout(
+                    () => { this.closeToast(); },
+                    current.length > 1 ? 500 : 2500
+                );
             }
             this.toastSubject.next(current);
         }, 100);

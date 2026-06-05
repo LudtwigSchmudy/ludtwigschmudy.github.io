@@ -243,7 +243,7 @@
             }
 
             @case ("checkout") {
-                    <h2 class="text-4xl mb-5">Confirm Checkout</h2>
+                <h2 class="text-4xl mb-5">Confirm Checkout</h2>
                 <p class="text-lg text-gray-400 mb-6">
                     Are you ready to checkout? This will take you to our payment processor,
                     once you finish you will be brought back here.
@@ -281,6 +281,27 @@
                         </button>
                     }
                 </div>
+            }
+
+            @case ("error") {
+                <h2 class="text-4xl mb-5">Checkout Error</h2>
+                <p class="text-lg text-gray-400 mb-3 min-w-100">
+                    Unfortunately, our system only allows ~12 items at a time.
+                    If you have many individual tracks, please reduce the number per purchase,
+                    or switch to buying an album of the tracks you wanted.
+                </p>
+                <p class="text-lg text-gray-400 mb-6">
+                    We apologize for the inconvenience.
+                </p>
+                <button
+                    [class]="`
+                        px-12 py-3 rounded-lg font-bold bg-gray-600 text-lg mx-auto
+                        cursor-pointer hover:bg-gray-700 transition-all max-w-70 w-full
+                    `"
+                    (click)="closePopup()"
+                >
+                    Back
+                </button>
             }
         }
     </div>

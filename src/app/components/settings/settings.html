@@ -1,7 +1,145 @@
 <section class="p-12 w-full max-w-[1200px] mx-auto">
-    <h1 class="text-4xl md:text-5xl font-bold text-center pt-3 pb-6">Settings</h1>
+    <h1 class="text-4xl md:text-5xl font-bold text-center mb-12">Settings</h1>
 
     <div class="w-full">
-        
+        @if (user) {
+            <div class="`
+                max-w-95/100 mx-auto p-5 bg-gray-900 rounded-lg mb-6 flex items-center justify-between
+                border-1 border-gray-400/30 gap-6 w-max
+            `">
+                <img
+                    #profileImageDisplay
+                    class="size-30 rounded-full border-1 border-gray-400/30 shrink-0"
+                    [ngSrc]="user.photoURL"
+                    [alt]="`${user.displayName}'s photo`"
+                    [priority]="true"
+                    width="120"
+                    height="120"
+                    placeholder="/images/default-profile.png"
+                    [placeholderConfig]="{ blur: false }"
+                    (error)="resetImageSrc(profileImageDisplay)"
+                >
+                <div class="w-full flex flex-col gap-1">
+                    @if (user.displayName !== user.email) {
+                        <span>{{ user.displayName }}</span>
+                    }
+                    <span class="flex items-center">
+                        {{ user.email }}
+                        @if (user.emailVerified) {
+                            <span class="text-green-400 scale-75 translate-y-0.5"
+                                  title="Email verified">
+                                <mat-icon fontIcon="verified_user"/>
+                            </span>
+                        }
+                        @else {
+                            <span class="text-orange-400 scale-75 translate-y-0.5"
+                                  title="Email not verified">
+                                <mat-icon fontIcon="gpp_maybe"/>
+                            </span>
+                        }
+                    </span>
+                    @if (user.createdAt) {
+                        <div class="shrink-0 flex gap-1">
+                            <span class="text-white">Created:</span>
+                            <span class="text-gray-400">{{ user.createdAt | fullDateFormat }}</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (user?.accountType === "google.com") {
+            <div class="`
+                w-95/100 mx-auto p-5 bg-gray-900 rounded-lg mb-6 flex items-center justify-between
+                border-1 border-gray-400/30
+            `">
+                <span class="text-lg">
+                    Update account details (Google)
+                </span>
+                <a
+                    class="`
+                        cursor-pointer bg-blue-600 hover:bg-blue-800 text-white flex items-center gap-3
+                        py-2 px-6 rounded-lg text-sm font-semibold transition-background duration-300
+                    `"
+                    href="https://myaccount.google.com/personal-info"
+                    target="_blank"
+                >
+                    <mat-icon fontIcon="launch"/>
+                    Manage Account
+                </a>
+            </div>
+        }
+        @else {
+            <div class="`
+                w-95/100 mx-auto p-5 bg-gray-900 rounded-lg mb-6 flex items-center justify-between
+                border-1 border-gray-400/30
+            `">
+                <span class="text-lg">Stay tuned for more account detail settings</span>
+            </div>
+        }
+
+        <div class="`
+            w-95/100 mx-auto p-5 bg-gray-900 rounded-lg mb-6 flex items-center justify-between
+            border-1 border-gray-400/30 relative overflow-hidden
+        `">
+            <div class="`
+                absolute inset-0 bg-gray-400/30 text-white flex items-center
+                justify-center backdrop-blur-[2px]
+            `">
+                <h4 class="text-xl text-center">Coming Soon!</h4>
+            </div>
+            <span class="text-lg">
+                Change website theme
+            </span>
+            <button
+                class="`
+                    cursor-pointer flex items-center gap-3
+                    py-2 px-6 rounded-lg text-sm font-semibold transition-colors duration-300
+                    disabled:hover:cursor-not-allowed
+                `"
+                [ngClass]="{
+                    'bg-gray-100 hover:bg-gray-400 text-black': !lightMode,
+                    'bg-gray-800 hover:bg-gray-600 text-white': lightMode
+                }"
+                (click)="toggleMode()"
+                disabled
+            >
+                @if (lightMode) {
+                    <mat-icon fontIcon="brightness_low"/>
+                    Dark Mode
+                }
+                @else {
+                    <mat-icon fontIcon="brightness_high"/>
+                    Light Mode
+                }
+            </button>
+        </div>
+
+        <hr class="border-gray-500 border-dashed my-12 w-full mx-auto"/>
+        <h2 class="text-3xl text-center mb-12">Danger Section</h2>
+
+        <div class="`
+            w-95/100 mx-auto p-5 bg-gray-900 rounded-lg mb-6 flex items-center justify-between
+            border-1 border-gray-400/30 relative overflow-hidden
+        `">
+            <div class="`
+                absolute inset-0 bg-gray-400/30 text-white flex items-center
+                justify-center backdrop-blur-[2px]
+            `">
+                <h4 class="text-xl text-center">Contact me to delete</h4>
+            </div>
+            <span class="text-lg">
+                Delete your account
+            </span>
+            <button
+                class="`
+                    cursor-pointer block bg-red-600 hover:bg-red-800 text-white flex items-center gap-3
+                    py-2 px-6 rounded-lg text-sm font-semibold transition-background duration-300
+                `"
+            >
+            <mat-icon fontIcon="delete"/>
+                Delete
+            </button>
+        </div>
     </div>
 </section>

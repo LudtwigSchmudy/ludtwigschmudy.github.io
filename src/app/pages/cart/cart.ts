@@ -16,7 +16,7 @@ export class Cart {
     public cart: Product[] = [];
     public total: number = 0;
     public showPopup: boolean = false;
-    public popupState: "remove" | "checkout" | "clear" | null = null;
+    public popupState: "remove" | "checkout" | "clear" | "error" | null = null;
     public removingProduct: Product | undefined;
     public isCheckingOut: boolean = false;
     public isDownloading: boolean = false;
@@ -59,14 +59,25 @@ export class Cart {
     }
     public async confirmCheckout() {
         this.isCheckingOut = true;
-        const session = await this.shopService.createCheckout() as any;
+        const session = await this.shopService.createCheckout() as {
+            status: "ok" | "error",
+            url: string,
+            id: string,
+            message: string
+        };
         
         if (!session) {
             this.toastService.newToast('error', 'Unable to create checkout session');
             this.isCheckingOut = false;
             return
         }
-        if (session?.url) {
+        else if (session.status === "error") {
+            this.toastService.newToast('error', session.message);
+            this.popupState = "error";
+            this.isCheckingOut = false;
+            return
+        }
+        else if (session.status === "ok") {
             const checkoutWindow = window.open(
                 session.url,
                 'Stripe Checkout',
@@ -89,7 +100,7 @@ export class Cart {
                     this.showPopup = false;
                     if (status === 'paid') {
                         this.isDownloading = true;
-                        await this.shopService.savePurchases(session.id);
+                        // await this.shopService.savePurchases(session.id);
                         this.step = 'download';
                         const downloads = await this.shopService.sessionDownloads(session.id);
 

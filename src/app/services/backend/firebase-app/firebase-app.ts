@@ -32,7 +32,7 @@ export class FirebaseApp {
         this.functions = getFunctions(this.app);
         this.storage = getStorage(this.app);
 
-        connectFunctionsEmulator(this.functions, 'localhost', 5001);
+        // connectFunctionsEmulator(this.functions, 'localhost', 5001);
     }
 
     public basifyName(name: string): string {
@@ -58,7 +58,7 @@ export class FirebaseApp {
     public async getPurchases(data: any) {
         const fn = httpsCallable(this.functions, 'getPurchases');
         const result = await fn(data);
-        // console.log(result.data);
+        console.log(result.data);
         return result.data as PurchaseData;
     }
 

@@ -2,16 +2,22 @@ import { Component, inject } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
 import { AccountService } from '../../../services/backend/account/account';
 import { User } from '../../../types';
-import { NgClass } from '@angular/common';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 
 
 
 @Component({
-  selector: 'account-dropdown',
-  imports: [MatIcon, NgClass, RouterLink, RouterLinkActive],
-  templateUrl: './account-dropdown.html',
-  styleUrl: './account-dropdown.scss',
+    selector: 'account-dropdown',
+    imports: [
+        MatIcon,
+        NgClass,
+        RouterLink,
+        RouterLinkActive,
+        NgOptimizedImage
+    ],
+    templateUrl: './account-dropdown.html',
+    styleUrl: './account-dropdown.scss',
 })
 export class AccountDropdown {
     user: User | null;
@@ -23,10 +29,18 @@ export class AccountDropdown {
         this.authService.user.subscribe((user: any) => {
             if (user === null) this.user = null;
             else {
-                const { displayName, email, metadata, photoURL } = user;
+                var { displayName, email, metadata, photoURL } = user;
+
+                if (!displayName) displayName = email;
+                if (!photoURL) photoURL = "/images/default-profile.png";
+
                 this.user = { displayName, email, metadata, photoURL };
             }
         })
+    }
+
+    public resetImageSrc(el: HTMLImageElement) {
+        el.src = "/images/default-profile.png"
     }
 
     public openDropdown(keyPressed?: string) {
@@ -45,7 +59,7 @@ export class AccountDropdown {
     public async logout() {
         const loggedOut = await this.authService.signOut();
         if (loggedOut) {
-            this.router.navigate(['/']);
+            await this.router.navigate(['/']);
         }
         else {
             console.warn('Failed to logout');
