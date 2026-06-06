@@ -216,5 +216,26 @@
             "I'm Saved Because of Jesus Christ",
             "Warrior for Christ"
         ]
+    },
+    {
+        "title": "Different Angle",
+        "type": "EP",
+        "release": "2026-07-02",
+        "cover": "/images/songs/different-angle.jpg",
+        "links": {
+            "spotify": "",
+            "apple": "",
+            "youtube": "",
+            "others": ""
+        },
+        "songs": [
+            "Build of the Rock",
+            "Different Angle",
+            "God Still Speaks",
+            "Let it Shine",
+            "Not Who We Are",
+            "We Will Love Our Enemies"
+        ],
+        "presave": ""
     }
 ]
